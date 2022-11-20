@@ -2,6 +2,7 @@ buildscript {
   repositories {
     mavenLocal()
     mavenCentral()
+    gradlePluginPortal()
     maven {
       url "https://plugins.gradle.org/m2/"
     }
@@ -13,12 +14,15 @@ buildscript {
     classpath 'org.kordamp.gradle:stats-gradle-plugin:0.2.2'
     // JaCoCo log plugin
     classpath 'gradle.plugin.org.barfuin.gradle.jacocolog:gradle-jacoco-log:2.0.0'
+    // Docker plugin
+    classpath 'com.bmuschko:gradle-docker-plugin:9.0.1'
   }
 }
 
 apply plugin: 'base' // To add "clean" task to the root project.
 apply plugin: 'distribution'
 apply plugin: 'org.barfuin.gradle.jacocolog'
+apply plugin: 'idea'
 
 apply from: "${rootDir}/gradle/common.gradle"
 apply from: "${rootDir}/gradle/publishing-common.gradle"
@@ -28,6 +32,13 @@ subprojects {
 }
 
 evaluationDependsOnChildren()
+
+idea {
+  module {
+    downloadJavadoc = true
+    downloadSources = true
+  }
+}
 
 repositories {
   mavenLocal()
