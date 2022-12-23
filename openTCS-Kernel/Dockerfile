@@ -1,5 +1,7 @@
 FROM openjdk:13-jdk-alpine
 
+LABEL maintainer="Kicey"
+
 ADD ./build/install/openTCS-Kernel/ /home/openTCS-Kernel/
 
 WORKDIR /home/openTCS-Kernel
