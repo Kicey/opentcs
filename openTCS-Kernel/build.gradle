@@ -4,7 +4,6 @@ apply from: "${rootDir}/gradle/guice-application.gradle"
 apply from: "${rootDir}/gradle/license-headers.gradle"
 apply from: "${rootDir}/gradle/publishing-java.gradle"
 apply plugin: 'org.kordamp.gradle.stats'
-apply plugin: 'com.bmuschko.docker-java-application'
 
 if (!hasProperty('mainClass')) {
   ext.mainClass = 'org.opentcs.kernel.RunKernel'
@@ -33,12 +32,6 @@ distributions {
     contents {
       from "${sourceSets.main.resources.srcDirs[0]}/org/opentcs/kernel/distribution"
     }
-  }
-}
-
-docker {
-  javaApplication {
-    baseImage = 'dockerfile/java:openjdk-13-alpine'
   }
 }
 
