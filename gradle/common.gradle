@@ -1,5 +1,6 @@
 //
 // This file is to be applied to every subproject.
+// The script set the version of the project and create source directories if they don't exist.
 //
 
 // If we do not have a build number, we're building on a developer's system, so
