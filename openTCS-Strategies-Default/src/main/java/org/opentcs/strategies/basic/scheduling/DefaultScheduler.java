@@ -174,7 +174,7 @@ public class DefaultScheduler
 
       allocationAdvisor.setAllocationState(client,
                                            reservationPool.allocatedResources(client),
-                                           new LinkedList<>());
+                                           new ArrayList<>());
     }
   }
 
@@ -205,6 +205,28 @@ public class DefaultScheduler
       // completed. This could also be done in other places, but doing it for every new allocation 
       // should be sufficient.
       removeCompletedAllocateFutures(client);
+    }
+  }
+
+  @Override
+  public boolean mayAllocateNow(Client client,
+                                Set<TCSResource<?>> resources) {
+    requireNonNull(client, "client");
+    requireNonNull(resources, "resources");
+
+    synchronized (globalSyncObject) {
+      for (TCSResource<?> curResource : resources) {
+        ReservationEntry entry = reservationPool.getReservationEntry(curResource);
+        if (!entry.isFree() && !entry.isAllocatedBy(client)) {
+          LOG.warn("{}: Resource {} unavailable, reserved by {}",
+                   client.getId(),
+                   curResource.getName(),
+                   entry.getClient().getId());
+          return false;
+        }
+      }
+
+      return true;
     }
   }
 

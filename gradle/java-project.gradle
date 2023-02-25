@@ -16,17 +16,14 @@ dependencies {
   compileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
   testCompileOnly group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
 
-  // For JUnit 4.x tests
-  testCompileOnly group: 'junit', name: 'junit', version: '4.13.2'
-  testRuntimeOnly group: 'org.junit.vintage', name: 'junit-vintage-engine', version: '5.8.2'
-  // For JUnit 5 tests
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.2'
-  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.8.2'
-  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.2'
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.9.2'
+  testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params', version: '5.9.2'
+  testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.9.2'
 
   testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
-  testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.6.1'
-  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.23.1'
+  testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.11.0'
+  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+  testImplementation group: 'com.approvaltests', name: 'approvaltests', version: '18.5.0'
 
   testRuntimeOnly group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.36'
 }
@@ -50,7 +47,7 @@ task sourcesJar(type: Jar, dependsOn: classes, description: 'Creates a jar from 
 
 test {
   useJUnitPlatform()
-  ignoreFailures = true
+  // ignoreFailures = true
   systemProperties.put("java.awt.headless", "true")
 }
 

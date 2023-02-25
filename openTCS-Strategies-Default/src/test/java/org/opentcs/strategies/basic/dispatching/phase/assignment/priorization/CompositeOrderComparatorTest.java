@@ -9,17 +9,16 @@ package org.opentcs.strategies.basic.dispatching.phase.assignment.priorization;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.theInstance;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.opentcs.data.order.TransportOrder;
 import org.opentcs.strategies.basic.dispatching.DefaultDispatcherConfiguration;
@@ -36,7 +35,7 @@ public class CompositeOrderComparatorTest {
   private DefaultDispatcherConfiguration configuration;
   private Map<String, Comparator<TransportOrder>> availableComparators;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     configuration = Mockito.mock(DefaultDispatcherConfiguration.class);
     availableComparators = new HashMap<>();
@@ -46,7 +45,7 @@ public class CompositeOrderComparatorTest {
   public void sortNamesUpForOtherwiseEqualInstances() {
 
     Mockito.when(configuration.orderPriorities())
-        .thenReturn(new LinkedList<>());
+        .thenReturn(List.of());
     comparator = new CompositeOrderComparator(configuration, availableComparators);
 
     TransportOrder candidate1 = new TransportOrder("AA", new ArrayList<>());
@@ -68,7 +67,7 @@ public class CompositeOrderComparatorTest {
   @Test
   public void sortsByAgeAndName() {
     Mockito.when(configuration.orderPriorities())
-        .thenReturn(new LinkedList<>());
+        .thenReturn(List.of());
     comparator = new CompositeOrderComparator(configuration, availableComparators);
     
     Instant creationTime = Instant.now();
@@ -92,7 +91,7 @@ public class CompositeOrderComparatorTest {
   public void sortsByAgeAndNameAndDeadline() {
     String deadlineKey = "BY_DEADLINE";
     Mockito.when(configuration.orderPriorities())
-        .thenReturn(Arrays.asList(deadlineKey));
+        .thenReturn(List.of(deadlineKey));
     availableComparators.put(deadlineKey,
                              new TransportOrderComparatorByDeadline());
 

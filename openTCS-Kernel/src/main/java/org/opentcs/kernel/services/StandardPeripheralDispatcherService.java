@@ -9,13 +9,16 @@ package org.opentcs.kernel.services;
 
 import static java.util.Objects.requireNonNull;
 import javax.inject.Inject;
+import org.opentcs.access.KernelRuntimeException;
 import org.opentcs.components.kernel.PeripheralJobDispatcher;
 import org.opentcs.components.kernel.services.PeripheralDispatcherService;
 import org.opentcs.customizations.kernel.GlobalSyncObject;
 import org.opentcs.data.ObjectUnknownException;
+import org.opentcs.data.TCSObjectReference;
 import org.opentcs.data.model.Location;
 import org.opentcs.data.model.TCSResourceReference;
-import org.opentcs.kernel.workingset.TCSObjectPool;
+import org.opentcs.data.peripherals.PeripheralJob;
+import org.opentcs.kernel.workingset.TCSObjectRepository;
 
 /**
  * This class is the standard implementation of the {@link PeripheralDispatcherService} interface.
@@ -32,7 +35,7 @@ public class StandardPeripheralDispatcherService
   /**
    * The container of all course model and transport order objects.
    */
-  private final TCSObjectPool globalObjectPool;
+  private final TCSObjectRepository objectRepo;
   /**
    * The peripheral job dispatcher.
    */
@@ -42,15 +45,15 @@ public class StandardPeripheralDispatcherService
    * Creates a new instance.
    *
    * @param globalSyncObject The kernel threads' global synchronization object.
-   * @param globalObjectPool The object pool to be used.
+   * @param objectRepo The object repo to be used.
    * @param dispatcher The peripheral job dispatcher.
    */
   @Inject
   public StandardPeripheralDispatcherService(@GlobalSyncObject Object globalSyncObject,
-                                             TCSObjectPool globalObjectPool,
+                                             TCSObjectRepository objectRepo,
                                              PeripheralJobDispatcher dispatcher) {
     this.globalSyncObject = requireNonNull(globalSyncObject, "globalSyncObject");
-    this.globalObjectPool = requireNonNull(globalObjectPool, "globalObjectPool");
+    this.objectRepo = requireNonNull(objectRepo, "objectRepo");
     this.dispatcher = requireNonNull(dispatcher, "dispatcher");
   }
 
@@ -65,7 +68,15 @@ public class StandardPeripheralDispatcherService
   public void withdrawByLocation(TCSResourceReference<Location> ref)
       throws ObjectUnknownException {
     synchronized (globalSyncObject) {
-      dispatcher.withdrawJob(globalObjectPool.getObject(Location.class, ref));
+      dispatcher.withdrawJob(objectRepo.getObject(Location.class, ref));
+    }
+  }
+
+  @Override
+  public void withdrawByPeripheralJob(TCSObjectReference<PeripheralJob> ref)
+      throws ObjectUnknownException, KernelRuntimeException {
+    synchronized (globalSyncObject) {
+      dispatcher.withdrawJob(objectRepo.getObject(PeripheralJob.class, ref));
     }
   }
 }

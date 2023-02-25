@@ -197,6 +197,27 @@ paths:
                   type: string
                   description: Details on the actual error.
                   example: Could not find transport order 'TOrder-01'.
+  /transportOrders/dispatcher/trigger:
+    post:
+      tags:
+        - Transport orders
+      summary: Explicitly triggers dispatching of vehicles / transport orders.
+      description: >-
+        Triggers the kernel's dispatcher to assign vehicles to transport orders.
+        This usually happens automatically, but depending on the kernel configuration, explicitly triggering it may be necessary.
+      responses:
+        "200":
+          description: Successful response
+        "500":
+          description: >-
+            Unexpectedly interrupted or there was an exception in the kernel while executing this method.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Details on the actual error.
   /vehicles:
     get:
       tags:
@@ -298,6 +319,39 @@ paths:
                   type: string
                   description: Details on the actual error.
                   example: Could not find vehicle 'Vehicle-0001'.
+  "/vehicles/{NAME}/rerouteRequest":
+    post:
+      tags:
+        - Vehicles
+      summary: Reroutes a vehicle with the given name.
+      description: ""
+      parameters:
+        - name: NAME
+          in: path
+          description: Name of the vehicle to be rerouted
+          required: true
+          schema:
+            type: string
+        - name: forced
+          in: query
+          description: Whether the vehicle should be rerouted even if it's not where it is expected to be.
+          required: false
+          schema:
+            type: boolean
+            default: false
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Referencing object that could not be found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Details on the actual error.
+                  example: Could not find vehicle 'Vehicle-0001'.
   "/vehicles/{NAME}/integrationLevel":
     put:
       tags:
@@ -369,6 +423,133 @@ paths:
                   type: string
                   description: Details on the actual error.
                   example: Could not find vehicle 'Vehicle-0001'.
+  "/vehicles/{NAME}/commAdapter/attachmentInformation":
+    get:
+      tags:
+        - Vehicles
+      summary: Retrieves the driver attachment information of this vehicle.
+      description: ""
+      parameters:
+        - name: NAME
+          in: path
+          description: The name of the vehicle.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AttachmentInformation"
+        "404":
+          description: Referencing object that could not be found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Details on the actual error.
+                  example: Could not find vehicle 'Vehicle-0001'.
+  "/vehicles/{NAME}/commAdapter/attachment":
+    put:
+      tags:
+        - Vehicles
+      summary: Attaches the given vehicle driver to this vehicle.
+      description: ""
+      parameters:
+        - name: NAME
+          in: path
+          description: The name of the vehicle.
+          required: true
+          schema:
+            type: string
+        - name: newValue
+          in: query
+          description: The description class name of the vehicle driver that is to be attached.
+          required: true
+          example: org.opentcs.virtualvehicle.LoopbackCommunicationAdapterDescription
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Referencing object that could not be found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Details on the actual error.
+                  example: Could not find vehicle 'Vehicle-0001'.
+        "400":
+          description: The submitted value is invalid.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Details on the actual error.
+                  example: "Unknown vehicle driver class name: org.opentcs.someVehicle.driver11"
+  "/vehicles/{NAME}/commAdapter/enabled":
+    put:
+      tags:
+        - Vehicles
+      summary: Sets the enabled state for the named vehicle's driver.
+      description: ""
+      parameters:
+        - name: NAME
+          in: path
+          description: The name of the vehicle.
+          required: true
+          schema:
+            type: string
+        - name: newValue
+          in: query
+          description: The vehicle driver's new enabled state.
+          required: true
+          example: true
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Referencing object that could not be found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Details on the actual error.
+                  example: Could not find vehicle 'Vehicle-0001'.
+  /vehicles/dispatcher/trigger:
+    post:
+      tags:
+        - Vehicles
+      summary: Explicitly triggers dispatching of vehicles / transport orders.
+      description: >-
+        Triggers the kernel's dispatcher to assign vehicles to transport orders.
+        This usually happens automatically, but depending on the kernel configuration, explicitly triggering it may be necessary.
+      responses:
+        "200":
+          description: Successful response
+        "500":
+          description: >-
+            Unexpectedly interrupted or there was an exception in the kernel while executing this method.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Details on the actual error.
   /peripheralJobs:
     get:
       tags:
@@ -497,6 +678,32 @@ paths:
                 items:
                   type: string
                   description: Details on the actual error.
+  "/peripheralJobs/{NAME}/withdrawal":
+    post:
+      tags:
+        - Peripheral jobs
+      summary: Withdraws the peripheral job with the given name.
+      description: ""
+      parameters:
+        - name: NAME
+          in: path
+          description: The name of the peripheral job to be withdrawn.
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful operation
+        "404":
+          description: Referencing object that could not be found.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Details on the actual error.
+                  example: Could not find peripheral job 'PJob-01'.
   /peripheralJobs/dispatcher/trigger:
     post:
       tags:
@@ -579,6 +786,7 @@ paths:
                   example: Parameter 'timeout' is not in the correct range.
   /dispatcher/trigger:
     post:
+      deprecated: true
       tags:
         - Transport orders
         - Vehicles
@@ -606,18 +814,41 @@ components:
       in: header
       name: X-Api-Access-Key
   schemas:
+    AttachmentInformation:
+      title: Attachment Information
+      type: object
+      additionalProperties: false
+      properties:
+        vehicleName:
+          type: string
+          description: The name of the vehicle.
+          example: Vehicle-0001
+        availableCommAdapters:
+          type: array
+          items:
+            type: string
+          description: The list of drivers (as names of description classes) available for this vehicle.
+          example: [ "org.opentcs.someVehicle.driver001", "org.opentcs.someVehicle.driver002" ]
+        attachedCommAdapter:
+          type: string
+          description: The description class name of the vehicle driver currently attached to this vehicle.
+          example: org.opentcs.someVehicle.driver001
     TransportOrderState:
       title: Transport Order State
       type: object
       additionalProperties: false
       properties:
+        dispensable:
+          type: boolean
+          description: Whether this order is dispensable (may be withdrawn automatically).
+          example: false
         name:
           type: string
           description: The name of the transport order.
           example: TOrder-01
-        category:
+        type:
           type: string
-          description: The category of the transport order.
+          description: The type of the transport order.
           example: Park
         state:
           type: string
@@ -640,6 +871,20 @@ components:
           type: string
           description: The name of the vehicle currently processing the transport order.
           example: Vehicle-0002
+        peripheralReservationToken:
+          type: string
+          description: An (optional) token for reserving peripheral devices while processing this transport order.
+          example: Token-001
+        wrappingSequence:
+          type: string
+          description: >-
+            The order sequence this transport order belongs to. 
+            May be null in case this order isn't part of any sequence.
+          example: MyOrderSequence
+        type:
+          type: string
+          description: The type of the transport order
+          example: some type
         destinations:
           type: array
           items:
@@ -690,6 +935,10 @@ components:
             a suffix to it. It is recommended to set this, as names generated by the kernel can be
             guaranteed to be unique, while clients typically cannot guarantee this.
           default: false
+        dispensable:
+          type: boolean
+          description: Whether this order is dispensable (may be withdrawn automatically).
+          default: false
         deadline:
           type: string
           format: date-time
@@ -699,6 +948,20 @@ components:
           type: string
           description: The (optional) intended vehicle of the transport order
           example: Vehicle-01
+        peripheralReservationToken:
+          type: string
+          description: An (optional) token for reserving peripheral devices while processing this transport order.
+          example: Token-001
+        wrappingSequence:
+          type: string
+          description: >-
+            The order sequence this transport order belongs to.
+            May be null in case this order isn't part of any sequence.
+          example: MyOrderSequence
+        type:
+          type: string
+          description: The (optional) type of the transport order
+          example: some type
         destinations:
           type: array
           minItems: 1

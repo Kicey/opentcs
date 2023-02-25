@@ -120,8 +120,8 @@ public class DefaultPeripheralControllerPool
     checkArgument(location != null, "No such location: %s", locationRef.getName());
 
     LOG.debug("{}: Attaching controller...", locationRef.getName());
-    PeripheralController controller = controllerFactory.createVehicleController(locationRef,
-                                                                                commAdapter);
+    PeripheralController controller = controllerFactory.createPeripheralController(locationRef,
+                                                                                   commAdapter);
     poolEntries.put(locationRef, new PoolEntry(locationRef, controller, commAdapter));
     controller.initialize();
   }
@@ -131,7 +131,7 @@ public class DefaultPeripheralControllerPool
     requireNonNull(locationRef, "locationRef");
 
     if (!poolEntries.containsKey(locationRef)) {
-      LOG.warn("{}: No peripheral controller attached, doing nothing.", locationRef.getName());
+      LOG.debug("{}: No peripheral controller attached, doing nothing.", locationRef.getName());
       return;
     }
 

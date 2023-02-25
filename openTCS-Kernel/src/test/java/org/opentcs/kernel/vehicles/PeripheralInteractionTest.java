@@ -8,10 +8,12 @@
 package org.opentcs.kernel.vehicles;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -24,6 +26,7 @@ import org.opentcs.data.model.Path;
 import org.opentcs.data.model.Point;
 import org.opentcs.data.model.Vehicle;
 import org.opentcs.data.order.Route;
+import org.opentcs.data.order.TransportOrder;
 import org.opentcs.data.peripherals.PeripheralJob;
 import org.opentcs.data.peripherals.PeripheralOperation;
 import org.opentcs.data.peripherals.PeripheralOperation.ExecutionTrigger;
@@ -40,6 +43,10 @@ public class PeripheralInteractionTest {
    * The vehicle instance to use for the tests.
    */
   private static final Vehicle VEHICLE = new Vehicle("Vehicle-01");
+  /**
+   * The transport order to use for the tests.
+   */
+  private static final TransportOrder ORDER = new TransportOrder("TransportOrder-01", List.of());
   /**
    * The reservation token to use for the tests.
    */
@@ -64,7 +71,7 @@ public class PeripheralInteractionTest {
   public PeripheralInteractionTest() {
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     peripheralJobService = mock(PeripheralJobService.class);
     succeededCallback = mock(Runnable.class);
@@ -79,6 +86,7 @@ public class PeripheralInteractionTest {
                                                             false);
 
     peripheralInteraction = new PeripheralInteraction(VEHICLE.getReference(),
+                                                      ORDER.getReference(),
                                                       new DummyMovementCommand(),
                                                       Arrays.asList(operation),
                                                       peripheralJobService,
@@ -107,6 +115,7 @@ public class PeripheralInteractionTest {
     when(peripheralJobService.createPeripheralJob(any())).thenReturn(peripheralJob);
 
     peripheralInteraction = new PeripheralInteraction(VEHICLE.getReference(),
+                                                      ORDER.getReference(),
                                                       new DummyMovementCommand(),
                                                       Arrays.asList(operation),
                                                       peripheralJobService,
@@ -138,6 +147,7 @@ public class PeripheralInteractionTest {
     when(peripheralJobService.createPeripheralJob(any())).thenReturn(peripheralJob);
 
     peripheralInteraction = new PeripheralInteraction(VEHICLE.getReference(),
+                                                      ORDER.getReference(),
                                                       new DummyMovementCommand(),
                                                       Arrays.asList(operation),
                                                       peripheralJobService,

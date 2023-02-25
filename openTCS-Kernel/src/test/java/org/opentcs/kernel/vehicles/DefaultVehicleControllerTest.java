@@ -5,18 +5,16 @@
  * see the licensing information (LICENSE.txt) you should have received with
  * this copy of the software.)
  */
-/*
- *
- * Created on 23.03.2012 09:53:07
- */
 package org.opentcs.kernel.vehicles;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import org.junit.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
@@ -99,7 +97,7 @@ public class DefaultVehicleControllerTest {
    */
   private DefaultVehicleController stdVehicleController;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     vehicle = dataObjectFactory.createVehicle();
     vehicleModel = new VehicleProcessModel(vehicle);
@@ -132,7 +130,7 @@ public class DefaultVehicleControllerTest {
     stdVehicleController.initialize();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
     stdVehicleController.terminate();
     scheduler.terminate();
@@ -178,8 +176,8 @@ public class DefaultVehicleControllerTest {
 
   @Test
   public void shouldForwardLoadHandlingDevicesChangeToKernel() {
-    List<LoadHandlingDevice> devices = new LinkedList<>();
-    devices.add(new LoadHandlingDevice("MyLoadHandlingDevice", true));
+    List<LoadHandlingDevice> devices
+        = List.of(new LoadHandlingDevice("MyLoadHandlingDevice", true));
     vehicleModel.setVehicleLoadHandlingDevices(devices);
 
     verify(vehicleService).updateVehicleLoadHandlingDevices(vehicle.getReference(),
@@ -198,7 +196,7 @@ public class DefaultVehicleControllerTest {
   public void shouldForwardEventToBus() {
     final String adapterName = "myAdapter";
     final String eventString = "myString";
-    final List<VehicleCommAdapterEvent> eventsReceived = new LinkedList<>();
+    final List<VehicleCommAdapterEvent> eventsReceived = new ArrayList<>();
 
     eventBus.subscribe(event -> {
       if (event instanceof VehicleCommAdapterEvent) {
@@ -208,11 +206,9 @@ public class DefaultVehicleControllerTest {
 
     vehicleModel.publishEvent(new VehicleCommAdapterEvent(adapterName, eventString));
 
-    assertEquals("Did not receive exactly one event", 1, eventsReceived.size());
+    assertEquals(1, eventsReceived.size());
     VehicleCommAdapterEvent event = eventsReceived.get(0);
-    assertEquals("Received event does not seem to be published event",
-                 eventString,
-                 event.getAppendix());
+    assertEquals(eventString, event.getAppendix());
   }
 
   // Test cases for implementation of interface VehicleController start here.
