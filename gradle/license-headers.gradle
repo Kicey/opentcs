@@ -1,5 +1,7 @@
 apply plugin: 'com.github.hierynomus.license'
-
+//
+// This plugin adds a task to add and check the license headers of all source files.
+//
 license {
   header = rootProject.file('config/LICENSE')
   include "**/*.java"

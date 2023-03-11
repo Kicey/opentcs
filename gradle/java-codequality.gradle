@@ -1,5 +1,7 @@
 apply plugin: 'checkstyle'
-
+//
+// Check style of Java source files.
+//
 checkstyle {
   toolVersion = '10.7.0'
   configFile = rootProject.file("config/checkstyle/checkstyle.xml")

@@ -20,6 +20,11 @@ else
     export JAVA="java"
 fi
 
+RMI_SERVER_HOSTNAME_OPTION=
+if [ -n "${RMI_SERVER_HOSTNAME}" ]; then
+    RMI_SERVER_HOSTNAME_OPTION="-Djava.rmi.server.hostname=${RMI_SERVER_HOSTNAME}"
+fi
+
 # Start kernel
 ${JAVA} -enableassertions \
     -Dopentcs.base="${OPENTCS_BASE}" \
@@ -27,6 +32,7 @@ ${JAVA} -enableassertions \
     -Dopentcs.cfg4j.reload.interval=10000 \
     -Djava.util.logging.config.file=${OPENTCS_CONFIGDIR}/logging.config \
     -Djava.security.policy=file:${OPENTCS_CONFIGDIR}/java.policy \
+    ${RMI_SERVER_HOSTNAME_OPTION} \
     -XX:-OmitStackTraceInFastThrow \
     -classpath "${OPENTCS_CP}" \
     org.opentcs.kernel.RunKernel
