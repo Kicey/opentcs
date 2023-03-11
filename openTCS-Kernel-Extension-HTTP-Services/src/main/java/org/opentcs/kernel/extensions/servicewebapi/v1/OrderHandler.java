@@ -34,11 +34,13 @@ import org.opentcs.data.ObjectExistsException;
 import org.opentcs.data.ObjectUnknownException;
 import org.opentcs.data.model.Location;
 import org.opentcs.data.model.Vehicle;
+import org.opentcs.data.order.OrderConstants;
+import org.opentcs.data.order.ReroutingType;
 import org.opentcs.data.order.TransportOrder;
 import org.opentcs.data.peripherals.PeripheralJob;
-import org.opentcs.kernel.extensions.servicewebapi.v1.binding.incoming.Destination;
-import org.opentcs.kernel.extensions.servicewebapi.v1.binding.incoming.Job;
-import org.opentcs.kernel.extensions.servicewebapi.v1.binding.incoming.Transport;
+import org.opentcs.kernel.extensions.servicewebapi.v1.binding.PostPeripheralJobRequestTO;
+import org.opentcs.kernel.extensions.servicewebapi.v1.binding.PostTransportOrderRequestTO;
+import org.opentcs.kernel.extensions.servicewebapi.v1.binding.posttransportorder.Destination;
 import org.opentcs.kernel.extensions.servicewebapi.v1.binding.shared.Property;
 
 /**
@@ -98,7 +100,7 @@ public class OrderHandler {
     this.kernelExecutor = requireNonNull(kernelExecutor, "kernelExecutor");
   }
 
-  public TransportOrder createOrder(String name, Transport order)
+  public TransportOrder createOrder(String name, PostTransportOrderRequestTO order)
       throws ObjectUnknownException,
              ObjectExistsException,
              KernelRuntimeException,
@@ -108,10 +110,14 @@ public class OrderHandler {
 
     TransportOrderCreationTO to
         = new TransportOrderCreationTO(name, destinations(order))
-            .withIncompleteName(order.hasIncompleteName())
+            .withIncompleteName(order.isIncompleteName())
+            .withDispensable(order.isDispensable())
             .withIntendedVehicleName(order.getIntendedVehicle())
             .withDependencyNames(dependencyNames(order.getDependencies()))
             .withDeadline(deadline(order))
+            .withPeripheralReservationToken(order.getPeripheralReservationToken())
+            .withWrappingSequence(order.getWrappingSequence())
+            .withType(order.getType() == null ? OrderConstants.TYPE_NONE : order.getType())
             .withProperties(properties(order.getProperties()));
 
     try {
@@ -133,7 +139,7 @@ public class OrderHandler {
     }
   }
 
-  public PeripheralJob createPeripheralJob(String name, Job job) {
+  public PeripheralJob createPeripheralJob(String name, PostPeripheralJobRequestTO job) {
     requireNonNull(name, "name");
     requireNonNull(job, "job");
 
@@ -252,7 +258,36 @@ public class OrderHandler {
     });
   }
 
-  private List<DestinationCreationTO> destinations(Transport order) {
+  public void withdrawPeripheralJob(String name)
+      throws ObjectUnknownException {
+    requireNonNull(name, "name");
+
+    PeripheralJob job = jobService.fetchObject(PeripheralJob.class, name);
+    if (job == null) {
+      throw new ObjectUnknownException("Unknown peripheral job: " + name);
+    }
+
+    kernelExecutor.submit(() -> jobDispatcherService.withdrawByPeripheralJob(job.getReference()));
+  }
+
+  public void reroute(String vehicleName, boolean forced)
+      throws ObjectUnknownException {
+    requireNonNull(vehicleName, "vehicleName");
+
+    Vehicle vehicle = orderService.fetchObject(Vehicle.class, vehicleName);
+    if (vehicle == null) {
+      throw new ObjectUnknownException("Unknown vehicle: " + vehicleName);
+    }
+
+    kernelExecutor.submit(() -> {
+      dispatcherService.reroute(
+          vehicle.getReference(),
+          forced ? ReroutingType.FORCED : ReroutingType.REGULAR
+      );
+    });
+  }
+
+  private List<DestinationCreationTO> destinations(PostTransportOrderRequestTO order) {
     List<DestinationCreationTO> result = new ArrayList<>(order.getDestinations().size());
 
     for (Destination dest : order.getDestinations()) {
@@ -275,7 +310,7 @@ public class OrderHandler {
     return dependencies == null ? new HashSet<>() : new HashSet<>(dependencies);
   }
 
-  private Instant deadline(Transport order) {
+  private Instant deadline(PostTransportOrderRequestTO order) {
     return order.getDeadline() == null ? Instant.MAX : order.getDeadline();
   }
 

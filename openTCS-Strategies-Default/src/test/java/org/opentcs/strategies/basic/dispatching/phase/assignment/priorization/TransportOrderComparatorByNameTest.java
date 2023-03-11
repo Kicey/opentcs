@@ -9,12 +9,12 @@ package org.opentcs.strategies.basic.dispatching.phase.assignment.priorization;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.theInstance;
-import org.junit.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.opentcs.data.order.TransportOrder;
 import org.opentcs.strategies.basic.dispatching.priorization.transportorder.TransportOrderComparatorByName;
 
@@ -26,16 +26,16 @@ public class TransportOrderComparatorByNameTest {
 
   private TransportOrderComparatorByName comparator;
 
-  @Before
+  @BeforeEach
   public void setUp() {
     comparator = new TransportOrderComparatorByName();
   }
 
   @Test
   public void sortsAlphabeticallyByName() {
-    TransportOrder order1 = new TransportOrder("AA", new LinkedList<>());
-    TransportOrder order2 = new TransportOrder("CC", new LinkedList<>());
-    TransportOrder order3 = new TransportOrder("AB", new LinkedList<>());
+    TransportOrder order1 = new TransportOrder("AA", List.of());
+    TransportOrder order2 = new TransportOrder("CC", List.of());
+    TransportOrder order3 = new TransportOrder("AB", List.of());
 
     List<TransportOrder> list = new ArrayList<>();
     list.add(order1);

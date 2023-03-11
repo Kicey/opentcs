@@ -10,7 +10,10 @@ package org.opentcs.drivers.peripherals;
 import static java.util.Objects.requireNonNull;
 import org.opentcs.data.model.PeripheralInformation;
 import org.opentcs.drivers.peripherals.management.PeripheralProcessModelEvent;
+import org.opentcs.util.annotations.ScheduledApiChange;
 import org.opentcs.util.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A base class for peripheral communication adapters mainly providing command queue processing.
@@ -20,6 +23,10 @@ import org.opentcs.util.event.EventHandler;
 public abstract class BasicPeripheralCommAdapter
     implements PeripheralCommAdapter {
 
+  /**
+   * This class's Logger.
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(BasicPeripheralCommAdapter.class);
   /**
    * The handler used to send events to.
    */
@@ -96,6 +103,7 @@ public abstract class BasicPeripheralCommAdapter
       return;
     }
 
+    LOG.info("Peripheral comm adapter is being enabled: {}", processModel.getLocation().getName());
     connectPeripheral();
     setProcessModel(getProcessModel().withCommAdapterEnabled(true));
     sendProcessModelChangedEvent(PeripheralProcessModel.Attribute.COMM_ADAPTER_ENABLED);
@@ -118,6 +126,7 @@ public abstract class BasicPeripheralCommAdapter
       return;
     }
 
+    LOG.info("Peripheral comm adapter is being disabled: {}", processModel.getLocation().getName());
     disconnectPeripheral();
     setProcessModel(getProcessModel().withCommAdapterEnabled(false)
         .withState(PeripheralInformation.State.UNKNOWN));
@@ -128,6 +137,13 @@ public abstract class BasicPeripheralCommAdapter
   @Override
   public PeripheralProcessModel getProcessModel() {
     return processModel;
+  }
+
+  @Override
+  @ScheduledApiChange(when = "6.0", details = "Implementation will be removed")
+  public void abortJob() {
+    setProcessModel(getProcessModel().withState(PeripheralInformation.State.IDLE));
+    sendProcessModelChangedEvent(PeripheralProcessModel.Attribute.STATE);
   }
 
   protected void setProcessModel(PeripheralProcessModel processModel) {

@@ -10,21 +10,21 @@ package org.opentcs.strategies.basic.dispatching.rerouting;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import org.opentcs.components.kernel.Router;
-import org.opentcs.data.model.Path;
 import org.opentcs.data.model.Point;
+import org.opentcs.data.model.Vehicle;
+import org.opentcs.data.order.ReroutingType;
 import org.opentcs.data.order.Route;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The regular/default {@link DriveOrderMerger}.
+ * The {@link DriveOrderMerger} implementation for {@link ReroutingType#REGULAR}.
  * <p>
- * Merges two drive orders so that the merged drive order follows the route of {@code orderA} to the
- * point where both drive orders ({@code orderA} and {@code orderB}) start to diverge. From there,
- * the merged drive order follows the route of {@code orderB}.
+ * Merges two drive orders so that the merged drive order follows the route of {@code orderA} up to
+ * the point where both drive orders ({@code orderA} and {@code orderB}) start to diverge. From
+ * there, the merged drive order follows the route of {@code orderB}.
  *
  * @author Martin Grzenia (Fraunhofer IML)
  */
@@ -44,17 +44,30 @@ public class RegularDriveOrderMerger
   }
 
   @Override
-  protected List<Route.Step> mergeSteps(List<Route.Step> stepsA, List<Route.Step> stepsB) {
+  protected List<Route.Step> mergeSteps(List<Route.Step> stepsA,
+                                        List<Route.Step> stepsB,
+                                        Vehicle vehicle) {
     LOG.debug("Merging steps {} with {}", stepsToPaths(stepsA), stepsToPaths(stepsB));
-
-    // Get the step where stepsB starts to depart from stepsA (i.e. the step where routeA and routeB
-    // share the same source point).
-    Route.Step branchingStep = findStepWithSource(stepsB.get(0).getSourcePoint(), stepsA);
-
-    int branchingIndex = stepsA.indexOf(branchingStep);
     List<Route.Step> mergedSteps = new ArrayList<>();
-    mergedSteps.addAll(stepsA.subList(0, branchingIndex));
-    mergedSteps.addAll(stepsB);
+
+    // Get the step where stepsB starts to diverge from stepsA (i.e. the step where routeA and
+    // routeB share the same source point).
+    Route.Step divergingStep = findStepWithSource(stepsB.get(0).getSourcePoint(), stepsA);
+    int divergingIndex = stepsA.indexOf(divergingStep);
+    mergedSteps.addAll(stepsA.subList(0, divergingIndex));
+
+    // Set the rerouting type for the first step in the new route.
+    Route.Step firstStepOfNewRoute = stepsB.get(0);
+    List<Route.Step> modifiedStepsB = new ArrayList<>(stepsB);
+    modifiedStepsB.set(0, new Route.Step(firstStepOfNewRoute.getPath(),
+                                         firstStepOfNewRoute.getSourcePoint(),
+                                         firstStepOfNewRoute.getDestinationPoint(),
+                                         firstStepOfNewRoute.getVehicleOrientation(),
+                                         firstStepOfNewRoute.getRouteIndex(),
+                                         firstStepOfNewRoute.isExecutionAllowed(),
+                                         ReroutingType.REGULAR));
+
+    mergedSteps.addAll(modifiedStepsB);
 
     // Update the steps route indices since they originate from two different drive orders.
     mergedSteps = updateRouteIndices(mergedSteps);
@@ -70,25 +83,5 @@ public class RegularDriveOrderMerger
         .filter(step -> Objects.equals(step.getSourcePoint(), sourcePoint))
         .findFirst()
         .get();
-  }
-
-  private List<Route.Step> updateRouteIndices(List<Route.Step> steps) {
-    List<Route.Step> updatedSteps = new ArrayList<>();
-    for (int i = 0; i < steps.size(); i++) {
-      Route.Step currStep = steps.get(i);
-      updatedSteps.add(new Route.Step(currStep.getPath(),
-                                      currStep.getSourcePoint(),
-                                      currStep.getDestinationPoint(),
-                                      currStep.getVehicleOrientation(),
-                                      i,
-                                      currStep.isExecutionAllowed()));
-    }
-    return updatedSteps;
-  }
-
-  private List<Path> stepsToPaths(List<Route.Step> steps) {
-    return steps.stream()
-        .map(step -> step.getPath())
-        .collect(Collectors.toList());
   }
 }
