@@ -14,6 +14,15 @@ This change log lists the most relevant changes for past releases in reverse chr
 
 == Unreleased
 
+...
+
+== Version 5.8.1 (2023-02-27)
+
+* Fixes:
+** Properly set the date for 5.8 in the changelog.
+
+== Version 5.8 (2023-02-27)
+
 * New features:
 ** Add support for explicitly triggering rerouting of single vehicles, including optional _forced_ rerouting from a vehicle's current position even if it was not routed to that position by openTCS.
 ** Add support for withdrawing/aborting peripheral jobs:
