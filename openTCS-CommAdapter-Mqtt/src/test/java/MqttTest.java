@@ -11,7 +11,7 @@ public class MqttTest {
   String topic = "testtopic";
   String content = "hello";
   int qos = 0;
-  String broker = "wss://kicey.site:8084";
+  String broker = "ssl://kicey.site:8883";
   String userName = "test";
   String password = "test";
   String clientId = "mqttx_cbc693a9";
