@@ -17,6 +17,7 @@ import org.opentcs.data.TCSObjectEvent;
 import org.opentcs.data.model.Point;
 import org.opentcs.util.event.EventBus;
 import org.opentcs.util.event.SimpleEventBus;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * Unit tests for {@link TCSObjectManager}.
@@ -31,7 +32,7 @@ public class TCSObjectManagerTest {
 
   @BeforeEach
   public void setUp() {
-    objectRepo = new TCSObjectRepository();
+    objectRepo = new InMemoryTCSObjectRepository();
     eventBus = new SimpleEventBus();
     objectManager = new TCSObjectManager(objectRepo, eventBus);
   }

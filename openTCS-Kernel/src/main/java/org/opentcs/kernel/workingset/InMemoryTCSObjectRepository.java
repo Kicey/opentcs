@@ -19,6 +19,8 @@ import org.opentcs.data.ObjectExistsException;
 import org.opentcs.data.ObjectUnknownException;
 import org.opentcs.data.TCSObject;
 import org.opentcs.data.TCSObjectReference;
+import org.opentcs.workingset.TCSObjectRepository;
+
 import static org.opentcs.util.Assertions.checkArgument;
 
 /**
@@ -29,7 +31,7 @@ import static org.opentcs.util.Assertions.checkArgument;
  *
  * @author Stefan Walter (Fraunhofer IML)
  */
-public class TCSObjectRepository {
+public class InMemoryTCSObjectRepository implements TCSObjectRepository {
 
   /**
    * The objects contained in this pool, mapped by their names, grouped by their classes.
@@ -39,7 +41,7 @@ public class TCSObjectRepository {
   /**
    * Creates a new instance.
    */
-  public TCSObjectRepository() {
+  public InMemoryTCSObjectRepository() {
   }
 
   /**

@@ -22,6 +22,7 @@ import org.opentcs.access.to.peripherals.PeripheralOperationCreationTO;
 import org.opentcs.data.model.Triple;
 import org.opentcs.data.peripherals.PeripheralJob;
 import org.opentcs.util.event.SimpleEventBus;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * Unit tests for {@link PeripheralJobPoolManager}.
@@ -45,7 +46,7 @@ public class PeripheralJobPoolManagerTest {
 
   @BeforeEach
   public void setUp() {
-    objectRepo = new TCSObjectRepository();
+    objectRepo = new InMemoryTCSObjectRepository();
     plantModelManager = new PlantModelManager(objectRepo, new SimpleEventBus());
     jobPoolManager = new PeripheralJobPoolManager(objectRepo,
                                                   new SimpleEventBus(),

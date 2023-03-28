@@ -18,7 +18,7 @@ import org.opentcs.data.TCSObjectReference;
 import org.opentcs.data.model.Location;
 import org.opentcs.data.model.TCSResourceReference;
 import org.opentcs.data.peripherals.PeripheralJob;
-import org.opentcs.kernel.workingset.TCSObjectRepository;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * This class is the standard implementation of the {@link PeripheralDispatcherService} interface.

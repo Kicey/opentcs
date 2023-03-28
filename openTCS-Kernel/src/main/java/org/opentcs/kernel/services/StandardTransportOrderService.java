@@ -24,8 +24,8 @@ import org.opentcs.data.order.DriveOrder;
 import org.opentcs.data.order.OrderSequence;
 import org.opentcs.data.order.TransportOrder;
 import org.opentcs.kernel.workingset.PlantModelManager;
-import org.opentcs.kernel.workingset.TCSObjectRepository;
 import org.opentcs.kernel.workingset.TransportOrderPoolManager;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * This class is the standard implementation of the {@link TransportOrderService} interface.

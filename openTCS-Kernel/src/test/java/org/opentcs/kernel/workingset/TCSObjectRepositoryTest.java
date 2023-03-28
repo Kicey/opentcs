@@ -20,6 +20,7 @@ import org.opentcs.data.ObjectExistsException;
 import org.opentcs.data.model.LocationType;
 import org.opentcs.data.model.Path;
 import org.opentcs.data.model.Point;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * Unit tests for {@link TCSObjectRepository}.
@@ -32,7 +33,7 @@ public class TCSObjectRepositoryTest {
 
   @BeforeEach
   public void setUp() {
-    pool = new TCSObjectRepository();
+    pool = new InMemoryTCSObjectRepository();
   }
 
   @Test
