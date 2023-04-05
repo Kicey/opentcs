@@ -17,6 +17,7 @@ public class MqttCommAdapterModule extends KernelInjectionModule {
    */
   @Override
   protected void configure() {
+    LOG.info("????????????????");
     MqttAdapterConfiguration configuration
         = getConfigBindingProvider().get(MqttAdapterConfiguration.PREFIX,
                                          MqttAdapterConfiguration.class);

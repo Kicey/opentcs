@@ -1,36 +1,34 @@
-import org.eclipse.paho.mqttv5.client.MqttClient;
+package site.kicey;
+
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
 import org.eclipse.paho.mqttv5.client.persist.MemoryPersistence;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
-import org.junit.jupiter.api.Test;
+import org.eclipse.paho.mqttv5.client.MqttClient;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-public class MqttTest {
-  String topic = "testtopic";
-  String content = "hello";
-  int qos = 0;
-  String broker = "tcp://kicey.site:1883";
-  String userName = "test";
-  String password = "test";
-  String clientId = "mqttx_cbc693a9_";
-
-  @Test
-  public void Main(){
+public class MqttClientI {
+  private MqttClient mqttClient;
+  public MqttClientI(String broker,String userName, String password){
+    String clientId = "mqttx_cbc693a9_+";
     MemoryPersistence persistence = new MemoryPersistence();
     try {
-      MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
+      this.mqttClient = new MqttClient(broker, clientId, persistence);
       MqttConnectionOptions connOpts = new MqttConnectionOptions();
       connOpts.setCleanStart(true);
       connOpts.setUserName(userName);
       connOpts.setPassword(password.getBytes());
-      sampleClient.connect(connOpts);
-      MqttMessage message = new MqttMessage(content.getBytes());
-      message.setQos(qos);
-      sampleClient.publish(topic, message);
-      sampleClient.disconnect();
-      sampleClient.close();
+      this.mqttClient.connect(connOpts);
+
+
+    } catch (MqttException me) {
+      me.printStackTrace();
+    }
+  }
+  public void publish(String topic,String content,int qos) {
+    MqttMessage message = new MqttMessage(content.getBytes());
+    message.setQos(qos);
+    try {
+      this.mqttClient.publish(topic, message);
     } catch (MqttException me) {
       System.out.println("reason " + me.getReasonCode());
       System.out.println("msg " + me.getMessage());
@@ -40,4 +38,14 @@ public class MqttTest {
       me.printStackTrace();
     }
   }
+  public void close()  {
+    try {
+      this.mqttClient.disconnect();
+      this.mqttClient.close();
+    } catch (MqttException e) {
+      e.printStackTrace();
+    }
+
+  }
+
 }

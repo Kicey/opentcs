@@ -8,6 +8,7 @@ apply plugin: 'org.kordamp.gradle.stats'
 dependencies {
   api project(':openTCS-API-Injection')
   api project(':openTCS-Common')
+  api project(':openTCS-CommAdapter-Mqtt')
 }
 
 task release {

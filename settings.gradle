@@ -21,4 +21,3 @@ include 'openTCS-PlantOverview-Themes-Default'
 include 'openTCS-Documentation'
 include 'openTCS-CommAdapter-Mqtt'
 
-
