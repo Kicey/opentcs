@@ -1,0 +1,33 @@
+plugins {
+  id 'java'
+  id 'application'
+}
+
+group 'site.kicey'
+version '5.9.0-SNAPSHOT'
+
+apply from: "${rootDir}/gradle/java-project.gradle"
+apply from: "${rootDir}/gradle/java-codequality.gradle"
+apply from: "${rootDir}/gradle/guice-project.gradle"
+apply from: "${rootDir}/gradle/license-headers.gradle"
+apply from: "${rootDir}/gradle/publishing-java.gradle"
+apply plugin: 'org.kordamp.gradle.stats'
+
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+}
+
+application {
+  mainClassName = "site.kicey.strategies.provider.scheduler.SchedulerProviderApplication"
+}
+
+test {
+  useJUnitPlatform()
+}
+
+task release {
+  dependsOn build
+}

@@ -21,5 +21,7 @@ include 'openTCS-PlantOverview-Themes-Default'
 include 'openTCS-Documentation'
 include 'openTCS-Kernel-Extension-Redis'
 include 'openTCS-Strategies-Dubbo'
-
+include 'openTCS-Router-Provider'
+include 'openTCS-Scheduler-Provider'
+include 'openTCS-Dispatcher-Provider'
 
