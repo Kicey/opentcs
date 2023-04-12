@@ -5,6 +5,7 @@ import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.OptionalBinder;
 import org.opentcs.customizations.kernel.KernelInjectionModule;
+import org.opentcs.data.TCSObject;
 import org.opentcs.data.TCSObjectReference;
 import org.opentcs.data.model.Block;
 import org.opentcs.data.model.Block.Layout;
@@ -28,6 +29,14 @@ import org.opentcs.data.model.visualization.LayerGroup;
 import org.opentcs.data.model.visualization.ModelLayoutElement;
 import org.opentcs.data.model.visualization.ShapeLayoutElement;
 import org.opentcs.data.model.visualization.VisualLayout;
+import org.opentcs.data.order.DriveOrder;
+import org.opentcs.data.order.DriveOrder.Destination;
+import org.opentcs.data.order.OrderSequence;
+import org.opentcs.data.order.Route;
+import org.opentcs.data.order.Route.Step;
+import org.opentcs.data.order.TransportOrder;
+import org.opentcs.data.peripherals.PeripheralJob;
+import org.opentcs.data.peripherals.PeripheralOperation;
 import org.opentcs.workingset.TCSObjectRepository;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -36,6 +45,7 @@ import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.kicey.kernel.extensions.redis.mixin.TCSObjectMixIn;
 import site.kicey.kernel.extensions.redis.mixin.TCSObjectReferenceMixIn;
 import site.kicey.kernel.extensions.redis.mixin.model.BlockMixIn;
 import site.kicey.kernel.extensions.redis.mixin.model.BlockMixIn.LayoutMixIn;
@@ -59,6 +69,14 @@ import site.kicey.kernel.extensions.redis.mixin.model.visualization.LayerMixIn;
 import site.kicey.kernel.extensions.redis.mixin.model.visualization.ModelLayoutElementMixIn;
 import site.kicey.kernel.extensions.redis.mixin.model.visualization.ShapeLayoutElementMixIn;
 import site.kicey.kernel.extensions.redis.mixin.model.visualization.VisualLayoutMixIn;
+import site.kicey.kernel.extensions.redis.mixin.order.DriveOrderMixIn;
+import site.kicey.kernel.extensions.redis.mixin.order.DriveOrderMixIn.DestinationMixIn;
+import site.kicey.kernel.extensions.redis.mixin.order.OrderSequenceMixIn;
+import site.kicey.kernel.extensions.redis.mixin.order.RouteMixIn;
+import site.kicey.kernel.extensions.redis.mixin.order.RouteMixIn.StepMixIn;
+import site.kicey.kernel.extensions.redis.mixin.order.TransportOrderMixIn;
+import site.kicey.kernel.extensions.redis.mixin.peripherals.PeripheralJobMixIn;
+import site.kicey.kernel.extensions.redis.mixin.peripherals.PeripheralOperationMixIn;
 import site.kicey.kernel.extensions.redis.workingset.RedisTCSObjectRepository;
 
 
@@ -139,6 +157,17 @@ public class RedisStoreModule extends KernelInjectionModule {
     objectMapper.addMixIn(Triple.class, TripleMixIn.class);
     objectMapper.addMixIn(Vehicle.class, VehicleMixIn.class);
 
+    objectMapper.addMixIn(DriveOrder.class, DriveOrderMixIn.class);
+    objectMapper.addMixIn(Destination.class, DestinationMixIn.class);
+    objectMapper.addMixIn(OrderSequence.class, OrderSequenceMixIn.class);
+    objectMapper.addMixIn(Step.class, StepMixIn.class);
+    objectMapper.addMixIn(Route.class, RouteMixIn.class);
+    objectMapper.addMixIn(TransportOrder.class, TransportOrderMixIn.class);
+
+    objectMapper.addMixIn(PeripheralJob.class, PeripheralJobMixIn.class);
+    objectMapper.addMixIn(PeripheralOperation.class, PeripheralOperationMixIn.class);
+
+    objectMapper.addMixIn(TCSObject.class, TCSObjectMixIn.class);
     objectMapper.addMixIn(TCSObjectReference.class, TCSObjectReferenceMixIn.class);
 
     return jsonJacksonCodec;

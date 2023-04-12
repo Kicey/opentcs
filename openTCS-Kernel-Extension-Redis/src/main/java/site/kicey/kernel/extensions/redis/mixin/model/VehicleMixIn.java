@@ -1,6 +1,7 @@
 package site.kicey.kernel.extensions.redis.mixin.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.awt.Color;
 import java.util.List;
@@ -22,7 +23,7 @@ import org.opentcs.drivers.vehicle.LoadHandlingDevice;
 /**
  * Mix-in for {@link org.opentcs.data.model.Vehicle}.
  */
-public class VehicleMixIn {
+public abstract class VehicleMixIn {
   @JsonCreator
   private VehicleMixIn(@JsonProperty("name") String name,
                   @JsonProperty("properties") Map<String, String> properties,
@@ -52,6 +53,21 @@ public class VehicleMixIn {
                   @JsonProperty("energyLevel") int energyLevel,
                   @JsonProperty("loadHandlingDevices") List<LoadHandlingDevice> loadHandlingDevices,
                   @JsonProperty("layout") Layout layout) {}
+
+  @JsonIgnore
+  public abstract boolean isEnergyLevelCritical();
+
+  @JsonIgnore
+  public abstract boolean isEnergyLevelDegraded();
+
+  @JsonIgnore
+  public abstract boolean isEnergyLevelGood();
+
+  @JsonIgnore
+  public abstract boolean isEnergyLevelFullyRecharged();
+
+  @JsonIgnore
+  public abstract boolean isEnergyLevelSufficientlyRecharged();
 
   /**
    * Mix-in for {@link org.opentcs.data.model.Vehicle.Layout}.

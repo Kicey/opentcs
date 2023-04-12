@@ -26,7 +26,11 @@ import org.opentcs.data.model.Vehicle;
 public abstract class PointMixIn {
 
   @JsonCreator
-  private PointMixIn(@JsonProperty("name") String name,
+  public PointMixIn(@JsonProperty("name") String name) {
+  }
+
+  @JsonCreator
+  public PointMixIn(@JsonProperty("name") String name,
       @JsonProperty("properties") Map<String, String> properties,
       @JsonProperty("history") ObjectHistory history,
       @JsonProperty("position") Triple position,

@@ -26,7 +26,7 @@ public abstract class LocationMixIn {
   private LocationMixIn(@JsonProperty("name") String name,
       @JsonProperty("properties") Map<String, String> properties,
       @JsonProperty("history") ObjectHistory history,
-      @JsonProperty("locationType") TCSObjectReference<LocationType> locationType,
+      @JsonProperty("type") TCSObjectReference<LocationType> locationType,
       @JsonProperty("position") Triple position,
       @JsonProperty("attachedLinks") Set<Link> attachedLinks,
       @JsonProperty("locked") boolean locked,

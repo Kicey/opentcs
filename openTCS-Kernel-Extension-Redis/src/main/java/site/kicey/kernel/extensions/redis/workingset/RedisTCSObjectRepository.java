@@ -244,7 +244,8 @@ public class RedisTCSObjectRepository implements TCSObjectRepository {
    */
   @Nonnull
   public <T extends TCSObject<T>> Set<T> getObjects(@Nonnull Class<T> clazz) {
-    return objects.getOrDefault(clazz, Map.of()).values().stream()
+    Map<String, TCSObject<?>> map = objects.getOrDefault(clazz, Map.of());
+    return map.values().stream()
         .map(clazz::cast)
         .collect(Collectors.toSet());
   }
