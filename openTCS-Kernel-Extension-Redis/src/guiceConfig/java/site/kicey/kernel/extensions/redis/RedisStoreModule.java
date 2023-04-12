@@ -1,10 +1,12 @@
 package site.kicey.kernel.extensions.redis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.OptionalBinder;
 import org.opentcs.customizations.kernel.KernelInjectionModule;
+import org.opentcs.data.ObjectHistory;
 import org.opentcs.data.TCSObject;
 import org.opentcs.data.TCSObjectReference;
 import org.opentcs.data.model.Block;
@@ -45,6 +47,7 @@ import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.kicey.kernel.extensions.redis.mixin.ObjectHistoryMixIn;
 import site.kicey.kernel.extensions.redis.mixin.TCSObjectMixIn;
 import site.kicey.kernel.extensions.redis.mixin.TCSObjectReferenceMixIn;
 import site.kicey.kernel.extensions.redis.mixin.model.BlockMixIn;
@@ -167,8 +170,12 @@ public class RedisStoreModule extends KernelInjectionModule {
     objectMapper.addMixIn(PeripheralJob.class, PeripheralJobMixIn.class);
     objectMapper.addMixIn(PeripheralOperation.class, PeripheralOperationMixIn.class);
 
+    objectMapper.addMixIn(ObjectHistory.class, ObjectHistoryMixIn.class);
+    objectMapper.addMixIn(ObjectHistory.Entry.class, ObjectHistoryMixIn.EntryMixIn.class);
     objectMapper.addMixIn(TCSObject.class, TCSObjectMixIn.class);
     objectMapper.addMixIn(TCSObjectReference.class, TCSObjectReferenceMixIn.class);
+
+    objectMapper.registerModule(new JavaTimeModule());
 
     return jsonJacksonCodec;
   }

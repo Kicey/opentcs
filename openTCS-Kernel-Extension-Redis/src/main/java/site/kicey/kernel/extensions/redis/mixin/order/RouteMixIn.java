@@ -19,40 +19,20 @@ import org.opentcs.data.order.Route.Step;
  * Mix-in for {@link org.opentcs.data.order.Route}.
  */
 public abstract class RouteMixIn {
-
   @JsonCreator
-  public RouteMixIn(@JsonProperty("routeSteps") List<Step> routeSteps,
-      @JsonProperty("routeCosts") long routeCosts) {
+  public RouteMixIn(@JsonProperty("steps") List<Step> routeSteps,
+      @JsonProperty("costs") long routeCosts) {
   }
 
-
   public static abstract class StepMixIn {
-
     @JsonCreator
     public StepMixIn(@JsonProperty("path") Path path,
         @JsonProperty("srcPoint") Point srcPoint,
-        @JsonProperty("destPoint") Point destPoint,
-        @JsonProperty("orientation") Vehicle.Orientation orientation,
+        @JsonProperty("destinationPoint") Point destPoint,
+        @JsonProperty("vehicleOrientation") Vehicle.Orientation orientation,
         @JsonProperty("routeIndex") int routeIndex,
         @JsonProperty("executionAllowed") boolean executionAllowed,
         @JsonProperty("reroutingType") ReroutingType reroutingType) {
-    }
-
-    @JsonCreator
-    public StepMixIn(@JsonProperty("path") Path path,
-        @JsonProperty("srcPoint") Point srcPoint,
-        @JsonProperty("destPoint") Point destPoint,
-        @JsonProperty("orientation") Vehicle.Orientation orientation,
-        @JsonProperty("routeIndex") int routeIndex,
-        @JsonProperty("executionAllowed") boolean executionAllowed) {
-    }
-
-    @JsonCreator
-    public StepMixIn(@JsonProperty("path") Path path,
-        @JsonProperty("srcPoint") Point srcPoint,
-        @JsonProperty("destPoint") Point destPoint,
-        @JsonProperty("orientation") Vehicle.Orientation orientation,
-        @JsonProperty("routeIndex") int routeIndex) {
     }
   }
 }

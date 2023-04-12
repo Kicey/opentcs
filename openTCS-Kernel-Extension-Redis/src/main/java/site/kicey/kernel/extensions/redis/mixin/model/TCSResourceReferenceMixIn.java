@@ -9,10 +9,6 @@ import org.opentcs.data.model.TCSResource;
  * @param <E>
  */
 public abstract class TCSResourceReferenceMixIn<E extends TCSResource<E>> {
-
-//  @JsonCreator
-//  public TCSResourceReferenceMixIn(@JsonProperty("newReferent") TCSResource<E> newReferent) {}
-
   @JsonCreator
   public TCSResourceReferenceMixIn(@JsonProperty("referentClass") Class<?> clazz, @JsonProperty("name") String name) {
   }

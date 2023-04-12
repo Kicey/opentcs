@@ -20,11 +20,6 @@ import org.opentcs.data.order.TransportOrder;
  * Mix-in for {@link OrderSequence}.
  */
 public abstract class OrderSequenceMixIn {
-
-  @JsonCreator
-  public OrderSequenceMixIn(@JsonProperty("name") String name) {
-  }
-
   @JsonCreator
   private OrderSequenceMixIn(@JsonProperty("name") String name,
       @JsonProperty("properties") Map<String, String> properties,

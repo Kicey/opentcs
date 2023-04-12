@@ -21,10 +21,6 @@ import org.opentcs.data.order.TransportOrder;
  */
 public abstract class DriveOrderMixIn {
   @JsonCreator
-  public DriveOrderMixIn(@JsonProperty("destination") Destination destination) {
-  }
-
-  @JsonCreator
   private DriveOrderMixIn(@JsonProperty("destination") Destination destination,
                      @JsonProperty("transportOrder") TCSObjectReference<TransportOrder> transportOrder,
                      @JsonProperty("route") Route route,
@@ -36,10 +32,6 @@ public abstract class DriveOrderMixIn {
    * Mix-in for {@link org.opentcs.data.order.DriveOrder.Destination}.
    */
   public static abstract class DestinationMixIn {
-    @JsonCreator
-    public DestinationMixIn(@JsonProperty("destination") TCSObjectReference<?> destination) {
-    }
-
     @JsonCreator
     private DestinationMixIn(@JsonProperty("destination") TCSObjectReference<?> destination,
                         @JsonProperty("properties") Map<String, String> properties,

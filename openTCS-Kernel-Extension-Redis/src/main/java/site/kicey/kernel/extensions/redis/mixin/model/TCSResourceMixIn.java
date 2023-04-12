@@ -12,7 +12,6 @@ import org.opentcs.data.model.TCSResource;
  * @param <E>
  */
 public abstract class TCSResourceMixIn<E extends TCSResource<E>> {
-
   @JsonCreator
   protected TCSResourceMixIn(@JsonProperty("name") String name,
       @JsonProperty("properties") Map<String, String> properties,

@@ -24,10 +24,6 @@ import org.opentcs.data.peripherals.PeripheralOperation;
  */
 public abstract class PeripheralJobMixIn {
   @JsonCreator
-  public PeripheralJobMixIn(@JsonProperty("name") String name,
-                       @JsonProperty("reservationToken") String reservationToken,
-                       @JsonProperty("peripheralOperation") PeripheralOperation peripheralOperation) {}
-  @JsonCreator
   private PeripheralJobMixIn(@JsonProperty("objectName") String objectName,
                         @JsonProperty("properties") Map<String, String> properties,
                         @JsonProperty("history") ObjectHistory history,

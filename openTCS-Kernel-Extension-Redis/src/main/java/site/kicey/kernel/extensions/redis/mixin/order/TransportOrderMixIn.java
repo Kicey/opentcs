@@ -18,12 +18,6 @@ import org.opentcs.data.order.TransportOrder.State;
  * Mix-in for {@link TransportOrder}.
  */
 public abstract class TransportOrderMixIn {
-
-  @JsonCreator
-  public TransportOrderMixIn(@JsonProperty("name") String name,
-      @JsonProperty("driveOrders") List<DriveOrder> driveOrders) {
-  }
-
   @JsonCreator
   private TransportOrderMixIn(@JsonProperty("name") String name,
       @JsonProperty("properties") Map<String, String> properties,
