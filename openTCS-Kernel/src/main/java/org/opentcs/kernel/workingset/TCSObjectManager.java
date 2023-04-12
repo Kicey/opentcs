@@ -18,6 +18,7 @@ import org.opentcs.data.TCSObject;
 import org.opentcs.data.TCSObjectEvent;
 import org.opentcs.data.TCSObjectReference;
 import org.opentcs.util.event.EventHandler;
+import org.opentcs.workingset.TCSObjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

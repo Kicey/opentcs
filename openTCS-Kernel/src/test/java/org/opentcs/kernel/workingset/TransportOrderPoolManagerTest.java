@@ -25,6 +25,7 @@ import org.opentcs.data.model.Triple;
 import org.opentcs.data.order.OrderSequence;
 import org.opentcs.data.order.TransportOrder;
 import org.opentcs.util.event.SimpleEventBus;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * Unit tests for {@link TransportOrderPoolManager}.
@@ -48,7 +49,7 @@ public class TransportOrderPoolManagerTest {
 
   @BeforeEach
   public void setUp() {
-    objectRepo = new TCSObjectRepository();
+    objectRepo = new InMemoryTCSObjectRepository();
     plantModelManager = new PlantModelManager(objectRepo, new SimpleEventBus());
     orderPoolManager = new TransportOrderPoolManager(objectRepo,
                                                      new SimpleEventBus(),

@@ -7,8 +7,9 @@
  */
 package org.opentcs.data;
 
-import java.io.Serializable;
 import static java.util.Objects.requireNonNull;
+
+import java.io.Serializable;
 import javax.annotation.Nonnull;
 
 /**
@@ -41,7 +42,7 @@ public class TCSObjectReference<E extends TCSObject<E>>
     name = referent.getName();
   }
 
-  private TCSObjectReference(@Nonnull Class<?> clazz, @Nonnull String newName) {
+  protected TCSObjectReference(@Nonnull Class<?> clazz, @Nonnull String newName) {
     name = requireNonNull(newName, "newName");
     referentClass = requireNonNull(clazz, "clazz");
   }

@@ -57,6 +57,7 @@ import static org.opentcs.util.Assertions.checkState;
 import org.opentcs.util.Colors;
 import org.opentcs.util.annotations.ScheduledApiChange;
 import org.opentcs.util.event.EventHandler;
+import org.opentcs.workingset.TCSObjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

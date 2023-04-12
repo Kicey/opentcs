@@ -21,7 +21,7 @@ import org.opentcs.data.ObjectUnknownException;
 import org.opentcs.data.TCSObject;
 import org.opentcs.data.TCSObjectReference;
 import org.opentcs.kernel.workingset.TCSObjectManager;
-import org.opentcs.kernel.workingset.TCSObjectRepository;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * This class is the standard implementation of the {@link TCSObjectService} interface.

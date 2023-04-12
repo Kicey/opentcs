@@ -17,7 +17,7 @@ import org.opentcs.data.TCSObjectReference;
 import org.opentcs.data.model.Vehicle;
 import org.opentcs.data.order.ReroutingType;
 import org.opentcs.data.order.TransportOrder;
-import org.opentcs.kernel.workingset.TCSObjectRepository;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * This class is the standard implementation of the {@link DispatcherService} interface.

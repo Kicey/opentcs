@@ -8,6 +8,7 @@
 package org.opentcs.data.model;
 
 import java.io.Serializable;
+import javax.annotation.Nonnull;
 import org.opentcs.data.TCSObjectReference;
 
 /**
@@ -27,5 +28,9 @@ public class TCSResourceReference<E extends TCSResource<E>>
    */
   protected TCSResourceReference(TCSResource<E> newReferent) {
     super(newReferent);
+  }
+
+  private TCSResourceReference(@Nonnull Class<?> clazz, @Nonnull String newName) {
+    super(clazz, newName);
   }
 }

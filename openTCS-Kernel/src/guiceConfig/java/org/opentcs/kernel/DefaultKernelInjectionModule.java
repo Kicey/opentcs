@@ -1,14 +1,14 @@
 /**
  * Copyright (c) The openTCS Authors.
- *
- * This program is free software and subject to the MIT license. (For details,
- * see the licensing information (LICENSE.txt) you should have received with
- * this copy of the software.)
+ * <p>
+ * This program is free software and subject to the MIT license. (For details, see the licensing
+ * information (LICENSE.txt) you should have received with this copy of the software.)
  */
 package org.opentcs.kernel;
 
 import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.multibindings.MapBinder;
+import com.google.inject.multibindings.OptionalBinder;
 import java.io.File;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -71,17 +71,18 @@ import org.opentcs.kernel.vehicles.LocalVehicleControllerPool;
 import org.opentcs.kernel.vehicles.VehicleCommAdapterRegistry;
 import org.opentcs.kernel.vehicles.VehicleControllerComponentsFactory;
 import org.opentcs.kernel.vehicles.VehicleControllerFactory;
+import org.opentcs.kernel.workingset.InMemoryTCSObjectRepository;
 import org.opentcs.kernel.workingset.PlantModelManager;
 import org.opentcs.kernel.workingset.NotificationBuffer;
 import org.opentcs.kernel.workingset.PeripheralJobPoolManager;
 import org.opentcs.kernel.workingset.PrefixedUlidObjectNameProvider;
 import org.opentcs.kernel.workingset.TCSObjectManager;
-import org.opentcs.kernel.workingset.TCSObjectRepository;
 import org.opentcs.kernel.workingset.TransportOrderPoolManager;
 import org.opentcs.util.event.EventBus;
 import org.opentcs.util.event.EventHandler;
 import org.opentcs.util.event.SimpleEventBus;
 import org.opentcs.util.logging.UncaughtExceptionLogger;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * A Guice module for the openTCS kernel application.
@@ -115,7 +116,9 @@ public class DefaultKernelInjectionModule
         .in(Singleton.class);
 
     // The kernel's data pool structures.
-    bind(TCSObjectRepository.class).in(Singleton.class);
+    OptionalBinder.newOptionalBinder(binder(), TCSObjectRepository.class)
+        .setDefault()
+        .to(InMemoryTCSObjectRepository.class).in(Singleton.class);
     bind(TCSObjectManager.class).in(Singleton.class);
     bind(PlantModelManager.class).in(Singleton.class);
     bind(TransportOrderPoolManager.class).in(Singleton.class);
@@ -259,7 +262,7 @@ public class DefaultKernelInjectionModule
 
     bind(OrderPoolConfiguration.class)
         .toInstance(getConfigBindingProvider().get(OrderPoolConfiguration.PREFIX,
-                                                   OrderPoolConfiguration.class));
+            OrderPoolConfiguration.class));
 
     transportOrderCleanupApprovalBinder();
     orderSequenceCleanupApprovalBinder();
@@ -269,31 +272,31 @@ public class DefaultKernelInjectionModule
   private void configureKernelStarterDependencies() {
     bind(KernelApplicationConfiguration.class)
         .toInstance(getConfigBindingProvider().get(KernelApplicationConfiguration.PREFIX,
-                                                   KernelApplicationConfiguration.class));
+            KernelApplicationConfiguration.class));
   }
 
   private void configureSslParameters() {
     SslConfiguration configuration
         = getConfigBindingProvider().get(SslConfiguration.PREFIX,
-                                         SslConfiguration.class);
+        SslConfiguration.class);
     SslParameterSet sslParamSet = new SslParameterSet(SslParameterSet.DEFAULT_KEYSTORE_TYPE,
-                                                      new File(configuration.keystoreFile()),
-                                                      configuration.keystorePassword(),
-                                                      new File(configuration.truststoreFile()),
-                                                      configuration.truststorePassword());
+        new File(configuration.keystoreFile()),
+        configuration.keystorePassword(),
+        new File(configuration.truststoreFile()),
+        configuration.truststorePassword());
     bind(SslParameterSet.class).toInstance(sslParamSet);
   }
 
   private void configureKernelExecutor() {
     ScheduledExecutorService executor
         = new LoggingScheduledThreadPoolExecutor(
-            1,
-            runnable -> {
-              Thread thread = new Thread(runnable, "kernelExecutor");
-              thread.setUncaughtExceptionHandler(new UncaughtExceptionLogger(false));
-              return thread;
-            }
-        );
+        1,
+        runnable -> {
+          Thread thread = new Thread(runnable, "kernelExecutor");
+          thread.setUncaughtExceptionHandler(new UncaughtExceptionLogger(false));
+          return thread;
+        }
+    );
     bind(ScheduledExecutorService.class)
         .annotatedWith(KernelExecutor.class)
         .toInstance(executor);

@@ -35,6 +35,7 @@ import org.opentcs.data.order.OrderSequence;
 import org.opentcs.data.order.TransportOrder;
 import static org.opentcs.util.Assertions.checkArgument;
 import org.opentcs.util.event.EventHandler;
+import org.opentcs.workingset.TCSObjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

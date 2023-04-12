@@ -34,6 +34,7 @@ import org.opentcs.data.model.Triple;
 import org.opentcs.data.model.Vehicle;
 import org.opentcs.data.model.visualization.VisualLayout;
 import org.opentcs.util.event.SimpleEventBus;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * Unit tests for {@link PlantModelManager}.
@@ -53,7 +54,7 @@ public class PlantModelManagerTest {
 
   @BeforeEach
   public void setUp() {
-    objectRepo = new TCSObjectRepository();
+    objectRepo = new InMemoryTCSObjectRepository();
     plantModelManager = new PlantModelManager(objectRepo, new SimpleEventBus());
   }
 

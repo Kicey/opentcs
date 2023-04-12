@@ -37,9 +37,9 @@ import org.opentcs.kernel.vehicles.LocalVehicleControllerPool;
 import org.opentcs.kernel.workingset.PlantModelManager;
 import org.opentcs.kernel.workingset.PeripheralJobPoolManager;
 import org.opentcs.kernel.workingset.PrefixedUlidObjectNameProvider;
-import org.opentcs.kernel.workingset.TCSObjectRepository;
 import org.opentcs.kernel.workingset.TransportOrderPoolManager;
 import org.opentcs.util.event.SimpleEventBus;
+import org.opentcs.workingset.TCSObjectRepository;
 
 /**
  * Tests the operating state of the kernel.
