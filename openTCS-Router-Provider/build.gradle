@@ -18,6 +18,10 @@ repositories {
 }
 
 dependencies {
+  api project(':openTCS-API-Injection')
+  api project(':openTCS-Common')
+
+  implementation group: 'org.jgrapht', name: 'jgrapht-core', version: '1.5.1'
 }
 
 application {

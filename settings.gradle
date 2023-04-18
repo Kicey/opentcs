@@ -24,4 +24,6 @@ include 'openTCS-Strategies-Dubbo'
 include 'openTCS-Router-Provider'
 include 'openTCS-Scheduler-Provider'
 include 'openTCS-Dispatcher-Provider'
+include 'openTCS-Strategies-API'
+include 'openTCS-Kernel-Base'
 

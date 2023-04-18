@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+}
+
+apply from: "${rootDir}/gradle/java-project.gradle"
+apply from: "${rootDir}/gradle/java-codequality.gradle"
+apply from: "${rootDir}/gradle/license-headers.gradle"
+apply from: "${rootDir}/gradle/publishing-java.gradle"
+apply plugin: 'org.kordamp.gradle.stats'
+
+task release {
+  dependsOn build
+}
+
+group 'site.kicey'
+version '5.9.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+test {
+    useJUnitPlatform()
+}
