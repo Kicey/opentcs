@@ -19,6 +19,11 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+  api project(':openTCS-API-Injection')
+  api project(':openTCS-Common')
+}
+
 test {
     useJUnitPlatform()
 }

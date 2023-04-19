@@ -17,6 +17,7 @@ dependencies {
   api project(':openTCS-Common')
   api project(':openTCS-Kernel-Base')
   api project(':openTCS-Impl-Configuration-cfg4j')
+  api project(':openTCS-Strategies-API')
 }
 
 distributions {
