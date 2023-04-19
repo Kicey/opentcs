@@ -13,7 +13,6 @@ import com.google.inject.Module;
 import com.google.inject.util.Modules;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ServiceLoader;
 import org.opentcs.configuration.ConfigurationBindingProvider;
@@ -68,11 +67,7 @@ public class RunKernel {
    */
   private static Module customConfigurationModule() {
     List<KernelInjectionModule> defaultModules
-        = Arrays.asList(new DefaultKernelInjectionModule(),
-                        new DefaultDispatcherModule(),
-                        new DefaultRouterModule(),
-                        new DefaultSchedulerModule(),
-                        new DefaultPeripheralJobDispatcherModule());
+        = List.of(new DefaultKernelInjectionModule());
 
     ConfigurationBindingProvider bindingProvider = configurationBindingProvider();
     for (KernelInjectionModule defaultModule : defaultModules) {
