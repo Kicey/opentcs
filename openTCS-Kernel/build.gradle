@@ -17,7 +17,6 @@ dependencies {
   api project(':openTCS-Common')
   api project(':openTCS-CommAdapter-Loopback')
   api project(':openTCS-PeripheralCommAdapter-Loopback')
-  api project(':openTCS-Strategies-Default')
   api project(':openTCS-Impl-Configuration-cfg4j')
   api project(':openTCS-Kernel-Extension-HTTP-Services')
   api project(':openTCS-Kernel-Extension-RMI-Services')
