@@ -19,10 +19,6 @@ import java.util.ServiceLoader;
 import org.opentcs.configuration.ConfigurationBindingProvider;
 import org.opentcs.configuration.cfg4j.Cfg4jConfigurationBindingProvider;
 import org.opentcs.customizations.kernel.KernelInjectionModule;
-import org.opentcs.strategies.basic.dispatching.DefaultDispatcherModule;
-import org.opentcs.strategies.basic.peripherals.dispatching.DefaultPeripheralJobDispatcherModule;
-import org.opentcs.strategies.basic.routing.DefaultRouterModule;
-import org.opentcs.strategies.basic.scheduling.DefaultSchedulerModule;
 import org.opentcs.util.Environment;
 import org.opentcs.util.logging.UncaughtExceptionLogger;
 import org.slf4j.Logger;
@@ -72,11 +68,7 @@ public class RunKernel {
    */
   private static Module customConfigurationModule() {
     List<KernelInjectionModule> defaultModules
-        = Arrays.asList(new DefaultKernelInjectionModule(),
-                        new DefaultDispatcherModule(),
-                        new DefaultRouterModule(),
-                        new DefaultSchedulerModule(),
-                        new DefaultPeripheralJobDispatcherModule());
+        = Arrays.asList(new DefaultKernelInjectionModule());
 
     ConfigurationBindingProvider bindingProvider = configurationBindingProvider();
     for (KernelInjectionModule defaultModule : defaultModules) {
