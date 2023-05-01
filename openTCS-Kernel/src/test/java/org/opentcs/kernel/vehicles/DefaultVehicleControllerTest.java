@@ -39,9 +39,12 @@ import org.opentcs.drivers.vehicle.VehicleCommAdapter;
 import org.opentcs.drivers.vehicle.VehicleCommAdapterEvent;
 import org.opentcs.drivers.vehicle.VehicleProcessModel;
 import org.opentcs.drivers.vehicle.management.VehicleProcessModelTO;
-import org.opentcs.strategies.basic.scheduling.DummyScheduler;
+import org.opentcs.kernelbase.vehicles.DefaultVehicleController;
+import org.opentcs.kernelbase.vehicles.PeripheralInteractor;
+import org.opentcs.kernelbase.vehicles.VehicleControllerComponentsFactory;
 import org.opentcs.util.event.EventBus;
 import org.opentcs.util.event.SimpleEventBus;
+import site.kicey.strategies.rpc.scheduling.DummyScheduler;
 
 /**
  * Test cases for StandardVehicleController.

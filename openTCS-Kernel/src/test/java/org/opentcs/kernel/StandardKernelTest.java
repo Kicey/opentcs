@@ -22,6 +22,8 @@ import static org.mockito.Mockito.when;
 import org.opentcs.access.Kernel;
 import org.opentcs.access.LocalKernel;
 import org.opentcs.components.kernel.services.NotificationService;
+import org.opentcs.kernelbase.KernelState;
+import org.opentcs.kernelbase.StandardKernel;
 import org.opentcs.util.event.SimpleEventBus;
 
 /**

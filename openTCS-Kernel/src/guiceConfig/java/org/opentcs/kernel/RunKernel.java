@@ -19,6 +19,7 @@ import java.util.ServiceLoader;
 import org.opentcs.configuration.ConfigurationBindingProvider;
 import org.opentcs.configuration.cfg4j.Cfg4jConfigurationBindingProvider;
 import org.opentcs.customizations.kernel.KernelInjectionModule;
+import org.opentcs.kernelbase.KernelStarter;
 import org.opentcs.util.Environment;
 import org.opentcs.util.logging.UncaughtExceptionLogger;
 import org.slf4j.Logger;

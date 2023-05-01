@@ -33,7 +33,12 @@ import org.opentcs.drivers.peripherals.PeripheralCommAdapterFactory;
 import org.opentcs.drivers.peripherals.PeripheralJobCallback;
 import org.opentcs.drivers.peripherals.PeripheralProcessModel;
 import org.opentcs.drivers.peripherals.management.PeripheralAttachmentInformation;
-import org.opentcs.kernel.KernelApplicationConfiguration;
+import org.opentcs.kernelbase.KernelApplicationConfiguration;
+import org.opentcs.kernelbase.peripherals.LocalPeripheralControllerPool;
+import org.opentcs.kernelbase.peripherals.NullPeripheralCommAdapter;
+import org.opentcs.kernelbase.peripherals.PeripheralAttachmentManager;
+import org.opentcs.kernelbase.peripherals.PeripheralCommAdapterRegistry;
+import org.opentcs.kernelbase.peripherals.PeripheralEntryPool;
 import org.opentcs.util.ExplainedBoolean;
 import org.opentcs.util.event.EventHandler;
 
