@@ -35,7 +35,7 @@ import org.opentcs.kernelbase.KernelStateOperating;
 import org.opentcs.kernelbase.OrderCleanerTask;
 import org.opentcs.kernelbase.extensions.controlcenter.vehicles.AttachmentManager;
 import org.opentcs.kernelbase.peripherals.LocalPeripheralControllerPool;
-import org.opentcs.kernelbase.peripherals.PeripheralAttachmentManager;
+import org.opentcs.kernelbase.peripherals.DefaultPeripheralAttachmentManager;
 import org.opentcs.kernelbase.persistence.ModelPersister;
 import org.opentcs.kernelbase.vehicles.LocalVehicleControllerPool;
 import org.opentcs.kernelbase.workingset.PlantModelManager;
@@ -181,7 +181,7 @@ public class KernelStateOperatingTest {
             mock(OrderCleanerTask.class),
             extensions,
             attachmentManager,
-            mock(PeripheralAttachmentManager.class),
+            mock(DefaultPeripheralAttachmentManager.class),
             vehicleService
         )
     );

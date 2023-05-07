@@ -133,7 +133,7 @@ public class KernelStateOperating
    * @param orderCleanerTask The order cleaner task to be used.
    * @param extensions The kernel extensions to load.
    * @param attachmentManager The attachment manager to be used.
-   * @param peripheralAttachmentManager The peripheral attachment manager to be used.
+   * @param defaultPeripheralAttachmentManager The peripheral attachment manager to be used.
    * @param vehicleService The vehicle service to be used.
    */
   @Inject
@@ -153,7 +153,7 @@ public class KernelStateOperating
                               OrderCleanerTask orderCleanerTask,
                               @ActiveInOperatingMode Set<KernelExtension> extensions,
                               AttachmentManager attachmentManager,
-                              PeripheralAttachmentManager peripheralAttachmentManager,
+                              PeripheralAttachmentManager defaultPeripheralAttachmentManager,
                               InternalVehicleService vehicleService) {
     super(globalSyncObject,
           plantModelManager,
@@ -173,7 +173,7 @@ public class KernelStateOperating
     this.orderCleanerTask = requireNonNull(orderCleanerTask, "orderCleanerTask");
     this.extensions = requireNonNull(extensions, "extensions");
     this.attachmentManager = requireNonNull(attachmentManager, "attachmentManager");
-    this.peripheralAttachmentManager = requireNonNull(peripheralAttachmentManager,
+    this.peripheralAttachmentManager = requireNonNull(defaultPeripheralAttachmentManager,
                                                       "peripheralAttachmentManager");
     this.vehicleService = requireNonNull(vehicleService, "vehicleService");
   }
@@ -211,7 +211,8 @@ public class KernelStateOperating
     peripheralControllerPool.initialize();
     LOG.debug("Initializing attachment manager '{}'...", attachmentManager);
     attachmentManager.initialize();
-    LOG.debug("Initializing peripheral attachment manager '{}'...", peripheralAttachmentManager);
+    LOG.debug("Initializing peripheral attachment manager '{}'...",
+        peripheralAttachmentManager);
     peripheralAttachmentManager.initialize();
 
     // Start a task for cleaning up old orders periodically.
@@ -272,7 +273,8 @@ public class KernelStateOperating
     vehicleControllerPool.terminate();
     LOG.debug("Terminating attachment manager '{}'...", attachmentManager);
     attachmentManager.terminate();
-    LOG.debug("Terminating peripheral attachment manager '{}'...", peripheralAttachmentManager);
+    LOG.debug("Terminating peripheral attachment manager '{}'...",
+        peripheralAttachmentManager);
     peripheralAttachmentManager.terminate();
     // Grant communication adapters etc. some time to settle things.
     Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);

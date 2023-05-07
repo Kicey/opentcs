@@ -18,10 +18,10 @@ dependencies {
   api project(':openTCS-CommAdapter-Loopback')
   api project(':openTCS-PeripheralCommAdapter-Loopback')
   api project(':openTCS-Impl-Configuration-cfg4j')
+  api project(":openTCS-Kernel-Base")
   api project(':openTCS-Kernel-Extension-HTTP-Services')
   api project(':openTCS-Kernel-Extension-RMI-Services')
   api project(':openTCS-Kernel-Extension-Redis')
-  api project(":openTCS-Kernel-Base")
   api project(":openTCS-Strategies-Dubbo")
   implementation group: 'de.huxhorn.sulky', name: 'de.huxhorn.sulky.ulid', version: '8.3.0'
 

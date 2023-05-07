@@ -36,6 +36,7 @@ import org.opentcs.drivers.peripherals.management.PeripheralAttachmentInformatio
 import org.opentcs.kernelbase.KernelApplicationConfiguration;
 import org.opentcs.kernelbase.peripherals.LocalPeripheralControllerPool;
 import org.opentcs.kernelbase.peripherals.NullPeripheralCommAdapter;
+import org.opentcs.kernelbase.peripherals.DefaultPeripheralAttachmentManager;
 import org.opentcs.kernelbase.peripherals.PeripheralAttachmentManager;
 import org.opentcs.kernelbase.peripherals.PeripheralCommAdapterRegistry;
 import org.opentcs.kernelbase.peripherals.PeripheralEntryPool;
@@ -43,11 +44,11 @@ import org.opentcs.util.ExplainedBoolean;
 import org.opentcs.util.event.EventHandler;
 
 /**
- * Tests for the {@link PeripheralAttachmentManager}.
+ * Tests for the {@link DefaultPeripheralAttachmentManager}.
  *
  * @author Martin Grzenia (Fraunhofer IML)
  */
-public class PeripheralAttachmentManagerTest {
+public class DefaultPeripheralAttachmentManagerTest {
 
   private static final String LOCATION_NAME = "Location-01";
 
@@ -59,13 +60,13 @@ public class PeripheralAttachmentManagerTest {
 
   private final Location location;
 
-  public PeripheralAttachmentManagerTest() {
+  public DefaultPeripheralAttachmentManagerTest() {
     peripheralService = mock(InternalPeripheralService.class);
     commAdapterRegistry = mock(PeripheralCommAdapterRegistry.class);
     commAdapterFactory = mock(PeripheralCommAdapterFactory.class);
     peripheralEntryPool = new PeripheralEntryPool(peripheralService);
     attachmentManager = spy(
-        new PeripheralAttachmentManager(peripheralService,
+        new DefaultPeripheralAttachmentManager(peripheralService,
                                         mock(LocalPeripheralControllerPool.class),
                                         commAdapterRegistry,
                                         peripheralEntryPool,
