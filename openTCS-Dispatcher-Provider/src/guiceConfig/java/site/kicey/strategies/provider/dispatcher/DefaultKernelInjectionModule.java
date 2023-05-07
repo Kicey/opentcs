@@ -54,6 +54,7 @@ import org.opentcs.drivers.peripherals.PeripheralControllerPool;
 import org.opentcs.drivers.vehicle.VehicleControllerPool;
 import org.opentcs.kernelbase.extensions.controlcenter.vehicles.AttachmentManager;
 import org.opentcs.kernelbase.extensions.controlcenter.vehicles.VehicleEntryPool;
+import org.opentcs.kernelbase.peripherals.DefaultPeripheralAttachmentManager;
 import org.opentcs.kernelbase.peripherals.DefaultPeripheralControllerPool;
 import org.opentcs.kernelbase.peripherals.LocalPeripheralControllerPool;
 import org.opentcs.kernelbase.peripherals.PeripheralAttachmentManager;
@@ -154,6 +155,7 @@ public class DefaultKernelInjectionModule
     bind(PeripheralCommAdapterRegistry.class)
         .in(Singleton.class);
     bind(PeripheralAttachmentManager.class)
+        .to(DefaultPeripheralAttachmentManager.class)
         .in(Singleton.class);
     bind(PeripheralEntryPool.class)
         .in(Singleton.class);
