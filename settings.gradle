@@ -25,4 +25,5 @@ include 'openTCS-Scheduler-Provider'
 include 'openTCS-Dispatcher-Provider'
 include 'openTCS-Strategies-API'
 include 'openTCS-Kernel-Base'
+include 'openTCS-PeripheralDispatcher-Provider'
 
