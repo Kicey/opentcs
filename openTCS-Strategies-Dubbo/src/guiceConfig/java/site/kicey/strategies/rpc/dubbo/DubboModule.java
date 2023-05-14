@@ -7,9 +7,9 @@ import org.opentcs.customizations.kernel.KernelInjectionModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
-import site.kicey.opentcs.strategies.rpc.api.RpcDispatcherService;
-import site.kicey.opentcs.strategies.rpc.api.RpcRouterService;
-import site.kicey.opentcs.strategies.rpc.api.RpcSchedulerService;
+import site.kicey.opentcs.strategies.rpc.api.RpcDispatcher;
+import site.kicey.opentcs.strategies.rpc.api.RpcRouter;
+import site.kicey.opentcs.strategies.rpc.api.RpcScheduler;
 import site.kicey.strategies.rpc.DubboConfiguration;
 
 public class DubboModule extends KernelInjectionModule {
@@ -31,14 +31,14 @@ public class DubboModule extends KernelInjectionModule {
     }
 
     // Dispatcher service reference
-    ReferenceConfig<RpcDispatcherService> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
-    dispatcherServiceReferenceConfig.setInterface(RpcDispatcherService.class);
+    ReferenceConfig<RpcDispatcher> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
+    dispatcherServiceReferenceConfig.setInterface(RpcDispatcher.class);
     // Router service reference
-    ReferenceConfig<RpcRouterService> routerServiceReferenceConfig = new ReferenceConfig<>();
-    routerServiceReferenceConfig.setInterface(RpcRouterService.class);
+    ReferenceConfig<RpcRouter> routerServiceReferenceConfig = new ReferenceConfig<>();
+    routerServiceReferenceConfig.setInterface(RpcRouter.class);
     // Scheduler service reference
-    ReferenceConfig<RpcSchedulerService> schedulerServiceReferenceConfig = new ReferenceConfig<>();
-    schedulerServiceReferenceConfig.setInterface(RpcSchedulerService.class);
+    ReferenceConfig<RpcScheduler> schedulerServiceReferenceConfig = new ReferenceConfig<>();
+    schedulerServiceReferenceConfig.setInterface(RpcScheduler.class);
 
     RegistryConfig registryConfig = new RegistryConfig(configuration.zookeeperAddress());
 
@@ -50,12 +50,12 @@ public class DubboModule extends KernelInjectionModule {
         .reference(schedulerServiceReferenceConfig)
         .start();
 
-    RpcDispatcherService rpcDispatcherService = dispatcherServiceReferenceConfig.get();
-    RpcRouterService rpcRouterService = routerServiceReferenceConfig.get();
-    RpcSchedulerService rpcSchedulerService = schedulerServiceReferenceConfig.get();
+    RpcDispatcher rpcDispatcher = dispatcherServiceReferenceConfig.get();
+    RpcRouter rpcRouter = routerServiceReferenceConfig.get();
+    RpcScheduler rpcScheduler = schedulerServiceReferenceConfig.get();
 
-    bind(RpcDispatcherService.class).toInstance(rpcDispatcherService);
-    bind(RpcRouterService.class).toInstance(rpcRouterService);
-    bind(RpcSchedulerService.class).toInstance(rpcSchedulerService);
+    bind(RpcDispatcher.class).toInstance(rpcDispatcher);
+    bind(RpcRouter.class).toInstance(rpcRouter);
+    bind(RpcScheduler.class).toInstance(rpcScheduler);
   }
 }

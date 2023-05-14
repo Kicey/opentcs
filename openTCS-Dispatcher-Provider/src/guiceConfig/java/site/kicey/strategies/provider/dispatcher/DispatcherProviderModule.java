@@ -9,9 +9,6 @@ import org.opentcs.customizations.kernel.KernelInjectionModule;
 import org.opentcs.data.model.Vehicle;
 import org.opentcs.data.order.ReroutingType;
 import org.opentcs.data.order.TransportOrder;
-import site.kicey.opentcs.strategies.rpc.proxy.PeripheralJobDispatcherRpcProxy;
-import site.kicey.opentcs.strategies.rpc.proxy.RouterRpcProxy;
-import site.kicey.opentcs.strategies.rpc.proxy.SchedulerRpcProxy;
 import site.kicey.strategies.provider.dispatcher.dispatching.AssignmentCandidate;
 import site.kicey.strategies.provider.dispatcher.dispatching.DefaultDispatcher;
 import site.kicey.strategies.provider.dispatcher.dispatching.DefaultDispatcherConfiguration;
@@ -68,9 +65,6 @@ public class DispatcherProviderModule extends KernelInjectionModule {
   protected void configure() {
     configureDispatcherDependencies();
     bindDispatcher(DefaultDispatcher.class);
-    bindPeripheralJobDispatcher(PeripheralJobDispatcherRpcProxy.class);
-    bindScheduler(SchedulerRpcProxy.class);
-    bindRouter(RouterRpcProxy.class);
   }
 
   private void configureDispatcherDependencies() {

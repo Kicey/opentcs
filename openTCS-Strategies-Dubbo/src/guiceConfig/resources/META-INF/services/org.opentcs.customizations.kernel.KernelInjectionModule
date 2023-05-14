@@ -1,4 +1,4 @@
-site.kicey.strategies.rpc.dispatching.RpcDispatcherModule
-site.kicey.strategies.rpc.peripherals.dispatching.RpcPeripheralJobDispatcherModule
-site.kicey.strategies.rpc.routing.RpcRouterModule
-site.kicey.strategies.rpc.scheduling.RpcSchedulerModule
+site.kicey.strategies.rpc.base.dispatching.RpcDispatcherModule
+site.kicey.strategies.rpc.base.peripherals.dispatching.RpcPeripheralJobDispatcherModule
+site.kicey.strategies.rpc.base.scheduling.RpcSchedulerModule
+site.kicey.strategies.rpc.base.routing.RpcRouterModule

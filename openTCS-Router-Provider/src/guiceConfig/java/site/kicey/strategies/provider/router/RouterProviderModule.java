@@ -5,9 +5,6 @@ import org.opentcs.components.kernel.routing.GroupMapper;
 import org.opentcs.customizations.kernel.KernelInjectionModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.kicey.opentcs.strategies.rpc.proxy.DispatcherRpcProxy;
-import site.kicey.opentcs.strategies.rpc.proxy.PeripheralJobDispatcherRpcProxy;
-import site.kicey.opentcs.strategies.rpc.proxy.SchedulerRpcProxy;
 import site.kicey.strategies.provider.router.routing.DefaultRouter;
 import site.kicey.strategies.provider.router.routing.DefaultRouterConfiguration;
 import site.kicey.strategies.provider.router.routing.DefaultRoutingGroupMapper;
@@ -24,6 +21,9 @@ import site.kicey.strategies.provider.router.routing.jgrapht.DijkstraPointRouter
 import site.kicey.strategies.provider.router.routing.jgrapht.FloydWarshallPointRouterFactory;
 import site.kicey.strategies.provider.router.routing.jgrapht.ModelGraphMapper;
 import site.kicey.strategies.provider.router.routing.jgrapht.ShortestPathConfiguration;
+import site.kicey.strategies.rpc.dispatching.RpcDispatcherProxy;
+import site.kicey.strategies.rpc.peripherals.dispatching.RpcPeripheralJobDispatcherProxy;
+import site.kicey.strategies.rpc.scheduling.RpcSchedulerProxy;
 
 public class RouterProviderModule extends KernelInjectionModule {
   /**
@@ -41,9 +41,9 @@ public class RouterProviderModule extends KernelInjectionModule {
   protected void configure() {
     configureRouterDependencies();
     bindRouter(DefaultRouter.class);
-    bindDispatcher(DispatcherRpcProxy.class);
-    bindPeripheralJobDispatcher(PeripheralJobDispatcherRpcProxy.class);
-    bindScheduler(SchedulerRpcProxy.class);
+    bindDispatcher(RpcDispatcherProxy.class);
+    bindPeripheralJobDispatcher(RpcPeripheralJobDispatcherProxy.class);
+    bindScheduler(RpcSchedulerProxy.class);
   }
 
   private void configureRouterDependencies() {
