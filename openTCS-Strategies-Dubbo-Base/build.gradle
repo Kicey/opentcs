@@ -18,6 +18,8 @@ dependencies {
   // https://mvnrepository.com/artifact/org.apache.dubbo/dubbo
   implementation group: 'org.apache.dubbo', name: 'dubbo', version: '3.2.0'
   implementation group: 'org.apache.dubbo', name: 'dubbo-dependencies-zookeeper-curator5', version: '3.2.0', ext: 'pom'
+  // https://mvnrepository.com/artifact/org.apache/apache
+  implementation group: 'org.apache', name: 'apache', version: '23', ext: 'pom'
 }
 
 task release {
