@@ -1,4 +1,4 @@
-package site.kicey.strategies.rpc.base.dubbo;
+package site.kicey.strategies.rpc.module;
 
 import org.apache.dubbo.config.RegistryConfig;
 import org.opentcs.customizations.kernel.KernelInjectionModule;

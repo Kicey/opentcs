@@ -5,7 +5,7 @@ import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.slf4j.Logger;
 import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
 import site.kicey.opentcs.strategies.rpc.api.RpcDispatcher;
-import site.kicey.strategies.rpc.base.dubbo.BaseDubboModule;
+import site.kicey.strategies.rpc.module.BaseDubboModule;
 import site.kicey.strategies.rpc.dispatching.RpcDispatcherProxy;
 
 public class RpcDispatcherModule extends BaseDubboModule {

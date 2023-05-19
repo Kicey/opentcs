@@ -6,10 +6,7 @@ import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.opentcs.customizations.kernel.KernelInjectionModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
-import site.kicey.opentcs.strategies.rpc.api.RpcDispatcher;
-import site.kicey.opentcs.strategies.rpc.api.RpcRouter;
-import site.kicey.opentcs.strategies.rpc.api.RpcScheduler;
+import site.kicey.opentcs.strategies.rpc.api.*;
 import site.kicey.strategies.rpc.DubboConfiguration;
 
 public class DubboModule extends KernelInjectionModule {
@@ -33,6 +30,9 @@ public class DubboModule extends KernelInjectionModule {
     // Dispatcher service reference
     ReferenceConfig<RpcDispatcher> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
     dispatcherServiceReferenceConfig.setInterface(RpcDispatcher.class);
+    // Peripheral job dispatcher service reference
+    ReferenceConfig<RpcPeripheralJobDispatcher> peripheralJobDispatcherReferenceConfig = new ReferenceConfig<>();
+    peripheralJobDispatcherReferenceConfig.setInterface(RpcPeripheralJobDispatcher.class);
     // Router service reference
     ReferenceConfig<RpcRouter> routerServiceReferenceConfig = new ReferenceConfig<>();
     routerServiceReferenceConfig.setInterface(RpcRouter.class);
@@ -51,6 +51,7 @@ public class DubboModule extends KernelInjectionModule {
         .start();
 
     RpcDispatcher rpcDispatcher = dispatcherServiceReferenceConfig.get();
+    RpcPeripheralJobDispatcher rpcPeripheralJobDispatcher = peripheralJobDispatcherReferenceConfig.get();
     RpcRouter rpcRouter = routerServiceReferenceConfig.get();
     RpcScheduler rpcScheduler = schedulerServiceReferenceConfig.get();
 
