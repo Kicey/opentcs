@@ -92,6 +92,7 @@ import org.opentcs.util.event.EventHandler;
 import org.opentcs.util.event.SimpleEventBus;
 import org.opentcs.util.logging.UncaughtExceptionLogger;
 import org.opentcs.workingset.TCSObjectRepository;
+import site.kicey.strategies.rpc.DubboConfiguration;
 
 /**
  * A Guice module for the openTCS kernel application.
@@ -283,6 +284,10 @@ public class DefaultKernelInjectionModule
     bind(KernelApplicationConfiguration.class)
         .toInstance(getConfigBindingProvider().get(KernelApplicationConfiguration.PREFIX,
             KernelApplicationConfiguration.class));
+
+    bind(DubboConfiguration.class)
+        .toInstance(getConfigBindingProvider().get(DubboConfiguration.PREFIX,
+            DubboConfiguration.class));
   }
 
   private void configureSslParameters() {

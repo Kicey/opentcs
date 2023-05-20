@@ -1,1 +1,5 @@
 site.kicey.strategies.provider.peripheraljobdispatcher.PeripheralJobDispatcherProviderModule
+site.kicey.strategies.rpc.base.dispatching.RpcDispatcherModule
+site.kicey.strategies.rpc.base.scheduling.RpcSchedulerModule
+site.kicey.strategies.rpc.base.routing.RpcRouterModule
+

@@ -9,19 +9,12 @@ import site.kicey.strategies.provider.scheduler.scheduling.ReservationPool;
 import site.kicey.strategies.provider.scheduler.scheduling.modules.PausedVehicleModule;
 import site.kicey.strategies.provider.scheduler.scheduling.modules.SameDirectionBlockModule;
 import site.kicey.strategies.provider.scheduler.scheduling.modules.SingleVehicleBlockModule;
-import site.kicey.strategies.rpc.dispatching.RpcDispatcherProxy;
-import site.kicey.strategies.rpc.peripherals.dispatching.RpcPeripheralJobDispatcherProxy;
-import site.kicey.strategies.rpc.routing.RpcRouterProxy;
 
 public class SchedulerProviderModule extends KernelInjectionModule {
   @Override
   protected void configure() {
     configureSchedulerDependencies();
     bindScheduler(DefaultScheduler.class);
-
-    bindDispatcher(RpcDispatcherProxy.class);
-    bindPeripheralJobDispatcher(RpcPeripheralJobDispatcherProxy.class);
-    bindRouter(RpcRouterProxy.class);
   }
 
   private void configureSchedulerDependencies() {

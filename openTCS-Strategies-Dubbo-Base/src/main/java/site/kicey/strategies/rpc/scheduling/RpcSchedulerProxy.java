@@ -5,21 +5,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nonnull;
+
+import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.RegistryConfig;
+import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.opentcs.components.kernel.ResourceAllocationException;
 import org.opentcs.components.kernel.Scheduler;
 import org.opentcs.data.model.TCSResource;
+import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
 import site.kicey.opentcs.strategies.rpc.api.RpcScheduler;
+import site.kicey.strategies.rpc.DubboConfiguration;
 
 /**
  * Rpc scheduler based on Dubbo.
  */
 public class RpcSchedulerProxy implements Scheduler {
 
-  private final RpcScheduler rpcScheduler;
+  private final DubboConfiguration dubboConfiguration;
+
+  private RpcScheduler rpcScheduler;
 
   @Inject
-  public RpcSchedulerProxy(RpcScheduler rpcScheduler){
-    this.rpcScheduler = rpcScheduler;
+  public RpcSchedulerProxy(@Nonnull DubboConfiguration dubboConfiguration){
+    this.dubboConfiguration = dubboConfiguration;
   }
 
   /**
@@ -27,6 +35,20 @@ public class RpcSchedulerProxy implements Scheduler {
    */
   @Override
   public void initialize() {
+    ReferenceConfig<RpcScheduler> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
+    dispatcherServiceReferenceConfig.setInterface(RpcScheduler.class);
+    try {
+      DubboBootstrap.getInstance()
+          .application(RpcConstant.APPLICATION_NAME)
+          .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
+          .reference(dispatcherServiceReferenceConfig)
+          .start();
+
+      rpcScheduler = dispatcherServiceReferenceConfig.get();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+
     rpcScheduler.initialize();
   }
 

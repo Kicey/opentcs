@@ -20,18 +20,6 @@ public class RpcPeripheralJobDispatcherModule extends BaseDubboModule {
       return;
     }
 
-    ReferenceConfig<RpcPeripheralJobDispatcher> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
-    dispatcherServiceReferenceConfig.setInterface(RpcPeripheralJobDispatcher.class);
-
-    DubboBootstrap.getInstance()
-        .application(RpcConstant.APPLICATION_NAME)
-        .registry(getRegistryConfig())
-        .reference(dispatcherServiceReferenceConfig)
-        .start();
-
-    RpcPeripheralJobDispatcher rpcPeripheralJobDispatcher = dispatcherServiceReferenceConfig.get();
-
-    bind(RpcPeripheralJobDispatcher.class).toInstance(rpcPeripheralJobDispatcher);
     bindPeripheralJobDispatcher(RpcPeripheralJobDispatcherProxy.class);
   }
 }

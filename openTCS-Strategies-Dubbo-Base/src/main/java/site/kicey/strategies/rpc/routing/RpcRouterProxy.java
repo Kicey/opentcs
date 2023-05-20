@@ -7,6 +7,10 @@ import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.RegistryConfig;
+import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.opentcs.components.kernel.Router;
 import org.opentcs.data.TCSObjectReference;
 import org.opentcs.data.model.Point;
@@ -14,18 +18,22 @@ import org.opentcs.data.model.Vehicle;
 import org.opentcs.data.order.DriveOrder;
 import org.opentcs.data.order.Route;
 import org.opentcs.data.order.TransportOrder;
+import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
 import site.kicey.opentcs.strategies.rpc.api.RpcRouter;
+import site.kicey.strategies.rpc.DubboConfiguration;
 
 /**
  * Rpc router based on Dubbo.
  */
 public class RpcRouterProxy implements Router {
 
-  private final RpcRouter rpcRouter;
+  private final DubboConfiguration dubboConfiguration;
+
+  private RpcRouter rpcRouter;
 
   @Inject
-  public RpcRouterProxy(RpcRouter rpcRouter){
-    this.rpcRouter = rpcRouter;
+  public RpcRouterProxy(DubboConfiguration dubboConfiguration){
+    this.dubboConfiguration = dubboConfiguration;
   }
 
   /**
@@ -33,6 +41,21 @@ public class RpcRouterProxy implements Router {
    */
   @Override
   public void initialize() {
+
+    ReferenceConfig<RpcRouter> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
+    dispatcherServiceReferenceConfig.setInterface(RpcRouter.class);
+    try {
+      DubboBootstrap.getInstance()
+          .application(RpcConstant.APPLICATION_NAME)
+          .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
+          .reference(dispatcherServiceReferenceConfig)
+          .start();
+
+      rpcRouter = dispatcherServiceReferenceConfig.get();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+
     rpcRouter.initialize();
   }
 

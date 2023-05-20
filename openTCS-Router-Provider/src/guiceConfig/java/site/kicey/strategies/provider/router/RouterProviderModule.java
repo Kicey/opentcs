@@ -21,9 +21,6 @@ import site.kicey.strategies.provider.router.routing.jgrapht.DijkstraPointRouter
 import site.kicey.strategies.provider.router.routing.jgrapht.FloydWarshallPointRouterFactory;
 import site.kicey.strategies.provider.router.routing.jgrapht.ModelGraphMapper;
 import site.kicey.strategies.provider.router.routing.jgrapht.ShortestPathConfiguration;
-import site.kicey.strategies.rpc.dispatching.RpcDispatcherProxy;
-import site.kicey.strategies.rpc.peripherals.dispatching.RpcPeripheralJobDispatcherProxy;
-import site.kicey.strategies.rpc.scheduling.RpcSchedulerProxy;
 
 public class RouterProviderModule extends KernelInjectionModule {
   /**
@@ -41,9 +38,6 @@ public class RouterProviderModule extends KernelInjectionModule {
   protected void configure() {
     configureRouterDependencies();
     bindRouter(DefaultRouter.class);
-    bindDispatcher(RpcDispatcherProxy.class);
-    bindPeripheralJobDispatcher(RpcPeripheralJobDispatcherProxy.class);
-    bindScheduler(RpcSchedulerProxy.class);
   }
 
   private void configureRouterDependencies() {

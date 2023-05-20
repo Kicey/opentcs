@@ -8,9 +8,6 @@ import site.kicey.strategies.provider.peripheraljobdispatcher.peripherals.dispat
 import site.kicey.strategies.provider.peripheraljobdispatcher.peripherals.dispatching.DefaultPeripheralReleaseStrategy;
 import site.kicey.strategies.provider.peripheraljobdispatcher.peripherals.dispatching.JobSelectionStrategy;
 import site.kicey.strategies.provider.peripheraljobdispatcher.peripherals.dispatching.PeripheralReleaseStrategy;
-import site.kicey.strategies.rpc.dispatching.RpcDispatcherProxy;
-import site.kicey.strategies.rpc.routing.RpcRouterProxy;
-import site.kicey.strategies.rpc.scheduling.RpcSchedulerProxy;
 
 public class PeripheralJobDispatcherProviderModule extends KernelInjectionModule {
   /**
@@ -23,9 +20,6 @@ public class PeripheralJobDispatcherProviderModule extends KernelInjectionModule
   protected void configure() {
     configureDispatcherDependencies();
     bindPeripheralJobDispatcher(DefaultPeripheralJobDispatcher.class);
-    bindDispatcher(RpcDispatcherProxy.class);
-    bindScheduler(RpcSchedulerProxy.class);
-    bindRouter(RpcRouterProxy.class);
   }
 
   private void configureDispatcherDependencies() {

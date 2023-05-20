@@ -1,10 +1,6 @@
 package site.kicey.strategies.rpc.base.scheduling;
 
-import org.apache.dubbo.config.ReferenceConfig;
-import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.slf4j.Logger;
-import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
-import site.kicey.opentcs.strategies.rpc.api.RpcScheduler;
 import site.kicey.strategies.rpc.module.BaseDubboModule;
 import site.kicey.strategies.rpc.scheduling.RpcSchedulerProxy;
 
@@ -23,18 +19,6 @@ public class RpcSchedulerModule extends BaseDubboModule {
       return;
     }
 
-    ReferenceConfig<RpcScheduler> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
-    dispatcherServiceReferenceConfig.setInterface(RpcScheduler.class);
-
-    DubboBootstrap.getInstance()
-        .application(RpcConstant.APPLICATION_NAME)
-        .registry(getRegistryConfig())
-        .reference(dispatcherServiceReferenceConfig)
-        .start();
-
-    RpcScheduler rpcScheduler = dispatcherServiceReferenceConfig.get();
-
-    bind(RpcScheduler.class).toInstance(rpcScheduler);
     bindScheduler(RpcSchedulerProxy.class);
   }
 }

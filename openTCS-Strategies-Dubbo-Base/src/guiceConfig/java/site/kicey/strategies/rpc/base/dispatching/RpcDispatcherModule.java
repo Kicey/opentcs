@@ -1,10 +1,6 @@
 package site.kicey.strategies.rpc.base.dispatching;
 
-import org.apache.dubbo.config.ReferenceConfig;
-import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.slf4j.Logger;
-import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
-import site.kicey.opentcs.strategies.rpc.api.RpcDispatcher;
 import site.kicey.strategies.rpc.module.BaseDubboModule;
 import site.kicey.strategies.rpc.dispatching.RpcDispatcherProxy;
 
@@ -23,18 +19,6 @@ public class RpcDispatcherModule extends BaseDubboModule {
       return;
     }
 
-    ReferenceConfig<RpcDispatcher> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
-    dispatcherServiceReferenceConfig.setInterface(RpcDispatcher.class);
-
-    DubboBootstrap.getInstance()
-        .application(RpcConstant.APPLICATION_NAME)
-        .registry(getRegistryConfig())
-        .reference(dispatcherServiceReferenceConfig)
-        .start();
-
-    RpcDispatcher rpcDispatcher = dispatcherServiceReferenceConfig.get();
-
-    bind(RpcDispatcher.class).toInstance(rpcDispatcher);
     bindDispatcher(RpcDispatcherProxy.class);
   }
 }

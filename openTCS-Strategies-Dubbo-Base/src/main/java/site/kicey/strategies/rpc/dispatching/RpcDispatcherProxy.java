@@ -2,11 +2,17 @@ package site.kicey.strategies.rpc.dispatching;
 
 import com.google.inject.Inject;
 import javax.annotation.Nonnull;
+
+import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.RegistryConfig;
+import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.opentcs.components.kernel.Dispatcher;
 import org.opentcs.data.model.Vehicle;
 import org.opentcs.data.order.ReroutingType;
 import org.opentcs.data.order.TransportOrder;
+import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
 import site.kicey.opentcs.strategies.rpc.api.RpcDispatcher;
+import site.kicey.strategies.rpc.DubboConfiguration;
 
 /**
  * Rpc dispatcher based on Dubbo.
@@ -14,11 +20,14 @@ import site.kicey.opentcs.strategies.rpc.api.RpcDispatcher;
  * @author kicey
  */
 public class RpcDispatcherProxy implements Dispatcher {
-  private final RpcDispatcher rpcDispatcher;
+
+  private final DubboConfiguration dubboConfiguration;
+
+  private RpcDispatcher rpcDispatcher;
 
   @Inject
-  public RpcDispatcherProxy(RpcDispatcher rpcDispatcher) {
-    this.rpcDispatcher = rpcDispatcher;
+  public RpcDispatcherProxy(@Nonnull DubboConfiguration dubboConfiguration) {
+    this.dubboConfiguration = dubboConfiguration;
   }
 
   /**
@@ -26,6 +35,19 @@ public class RpcDispatcherProxy implements Dispatcher {
    */
   @Override
   public void initialize() {
+    ReferenceConfig<RpcDispatcher> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
+    dispatcherServiceReferenceConfig.setInterface(RpcDispatcher.class);
+    try {
+      DubboBootstrap.getInstance()
+          .application(RpcConstant.APPLICATION_NAME)
+          .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
+          .reference(dispatcherServiceReferenceConfig)
+          .start();
+      rpcDispatcher = dispatcherServiceReferenceConfig.get();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     rpcDispatcher.initialize();
   }
 

@@ -2,19 +2,27 @@ package site.kicey.strategies.rpc.peripherals.dispatching;
 
 import com.google.inject.Inject;
 import javax.annotation.Nonnull;
+
+import org.apache.dubbo.config.ReferenceConfig;
+import org.apache.dubbo.config.RegistryConfig;
+import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.opentcs.components.kernel.PeripheralJobDispatcher;
 import org.opentcs.data.model.Location;
 import org.opentcs.data.peripherals.PeripheralJob;
 import org.opentcs.drivers.peripherals.PeripheralJobCallback;
+import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
 import site.kicey.opentcs.strategies.rpc.api.RpcPeripheralJobDispatcher;
+import site.kicey.strategies.rpc.DubboConfiguration;
 
 public class RpcPeripheralJobDispatcherProxy implements PeripheralJobDispatcher, PeripheralJobCallback {
 
-  private final RpcPeripheralJobDispatcher rpcPeripheralJobDispatcher;
+  private final DubboConfiguration dubboConfiguration;
+
+  private RpcPeripheralJobDispatcher rpcPeripheralJobDispatcher;
 
   @Inject
-  public RpcPeripheralJobDispatcherProxy(RpcPeripheralJobDispatcher rpcPeripheralJobDispatcher) {
-    this.rpcPeripheralJobDispatcher = rpcPeripheralJobDispatcher;
+  public RpcPeripheralJobDispatcherProxy(DubboConfiguration dubboConfiguration) {
+    this.dubboConfiguration = dubboConfiguration;
   }
 
   /**
@@ -22,6 +30,20 @@ public class RpcPeripheralJobDispatcherProxy implements PeripheralJobDispatcher,
    */
   @Override
   public void initialize() {
+
+    ReferenceConfig<RpcPeripheralJobDispatcher> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
+    dispatcherServiceReferenceConfig.setInterface(RpcPeripheralJobDispatcher.class);
+    try {
+      DubboBootstrap.getInstance()
+          .application(RpcConstant.APPLICATION_NAME)
+          .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
+          .reference(dispatcherServiceReferenceConfig)
+          .start();
+
+      rpcPeripheralJobDispatcher = dispatcherServiceReferenceConfig.get();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
     rpcPeripheralJobDispatcher.initialize();
   }
 
