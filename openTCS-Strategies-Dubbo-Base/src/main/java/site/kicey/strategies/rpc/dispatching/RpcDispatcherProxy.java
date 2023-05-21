@@ -3,6 +3,7 @@ package site.kicey.strategies.rpc.dispatching;
 import com.google.inject.Inject;
 import javax.annotation.Nonnull;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
@@ -19,6 +20,7 @@ import site.kicey.strategies.rpc.DubboConfiguration;
  *
  * @author kicey
  */
+@Slf4j
 public class RpcDispatcherProxy implements Dispatcher {
 
   private final DubboConfiguration dubboConfiguration;
@@ -37,17 +39,23 @@ public class RpcDispatcherProxy implements Dispatcher {
   public void initialize() {
     ReferenceConfig<RpcDispatcher> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
     dispatcherServiceReferenceConfig.setInterface(RpcDispatcher.class);
-    try {
-      DubboBootstrap.getInstance()
-          .application(RpcConstant.APPLICATION_NAME)
-          .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
-          .reference(dispatcherServiceReferenceConfig)
-          .start();
-      rpcDispatcher = dispatcherServiceReferenceConfig.get();
-    } catch (Exception e) {
-      e.printStackTrace();
+    boolean dubboServiceStarted = false;
+    int count = 0;
+    while(!dubboServiceStarted) {
+      try {
+        Thread.sleep(1000);
+        DubboBootstrap.getInstance()
+            .application(RpcConstant.APPLICATION_NAME)
+            .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
+            .reference(dispatcherServiceReferenceConfig)
+            .start();
+        rpcDispatcher = dispatcherServiceReferenceConfig.get();
+        dubboServiceStarted = true;
+      } catch (Exception e) {
+        ++count;
+      }
     }
-
+    log.info("Dispatcher Dubbo service started successfully, after {} count.", count);
     rpcDispatcher.initialize();
   }
 

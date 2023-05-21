@@ -6,14 +6,9 @@ import com.google.inject.multibindings.Multibinder;
 import java.util.Comparator;
 import javax.inject.Singleton;
 
-import org.apache.dubbo.config.ProtocolConfig;
-import org.apache.dubbo.config.ServiceConfig;
-import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.opentcs.data.model.Vehicle;
 import org.opentcs.data.order.ReroutingType;
 import org.opentcs.data.order.TransportOrder;
-import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
-import site.kicey.opentcs.strategies.rpc.api.RpcDispatcher;
 import site.kicey.strategies.provider.dispatcher.dispatching.AssignmentCandidate;
 import site.kicey.strategies.provider.dispatcher.dispatching.DefaultDispatcher;
 import site.kicey.strategies.provider.dispatcher.dispatching.DefaultDispatcherConfiguration;
@@ -207,19 +202,5 @@ public class DispatcherProviderModule extends BaseDubboModule {
     reroutingStrategies
         .addBinding(ReroutingType.FORCED)
         .to(ForcedReroutingStrategy.class);
-  }
-
-  private void registryService(RpcDispatcher dispatcher) {
-    ServiceConfig<RpcDispatcher> service = new ServiceConfig<>();
-    service.setInterface(RpcDispatcher.class);
-    service.setRef(dispatcher);
-
-    DubboBootstrap.getInstance()
-        .application(RpcConstant.APPLICATION_NAME)
-        .registry(getRegistryConfig())
-        .protocol(new ProtocolConfig("dubbo", -1))
-        .service(service)
-        .start()
-        .await();
   }
 }

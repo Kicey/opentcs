@@ -15,6 +15,7 @@ dependencies {
 
   // https://mvnrepository.com/artifact/org.projectlombok/lombok
   compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+  annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
   // https://mvnrepository.com/artifact/org.apache.dubbo/dubbo
   implementation group: 'org.apache.dubbo', name: 'dubbo', version: '3.2.0'
   implementation group: 'org.apache.dubbo', name: 'dubbo-dependencies-zookeeper-curator5', version: '3.2.0'

@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
@@ -25,6 +26,7 @@ import site.kicey.strategies.rpc.DubboConfiguration;
 /**
  * Rpc router based on Dubbo.
  */
+@Slf4j
 public class RpcRouterProxy implements Router {
 
   private final DubboConfiguration dubboConfiguration;
@@ -44,18 +46,26 @@ public class RpcRouterProxy implements Router {
 
     ReferenceConfig<RpcRouter> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
     dispatcherServiceReferenceConfig.setInterface(RpcRouter.class);
-    try {
-      DubboBootstrap.getInstance()
-          .application(RpcConstant.APPLICATION_NAME)
-          .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
-          .reference(dispatcherServiceReferenceConfig)
-          .start();
 
-      rpcRouter = dispatcherServiceReferenceConfig.get();
-    } catch (Exception exception) {
-      exception.printStackTrace();
+    boolean dubboServiceStarted = false;
+    int count = 0;
+    while (!dubboServiceStarted) {
+      try {
+        Thread.sleep(1000);
+
+        DubboBootstrap.getInstance()
+            .application(RpcConstant.APPLICATION_NAME)
+            .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
+            .reference(dispatcherServiceReferenceConfig)
+            .start();
+
+        rpcRouter = dispatcherServiceReferenceConfig.get();
+        dubboServiceStarted = true;
+      } catch (Exception exception) {
+        ++count;
+      }
     }
-
+    log.info("Router Dubbo service started successfully, after {} count.", count);
     rpcRouter.initialize();
   }
 

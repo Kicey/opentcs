@@ -6,6 +6,11 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import javax.inject.Inject;
+
+import org.apache.dubbo.config.ProtocolConfig;
+import org.apache.dubbo.config.RegistryConfig;
+import org.apache.dubbo.config.ServiceConfig;
+import org.apache.dubbo.config.bootstrap.DubboBootstrap;
 import org.opentcs.access.Kernel;
 import org.opentcs.access.LocalKernel;
 import org.opentcs.components.kernel.KernelExtension;
@@ -14,6 +19,10 @@ import org.opentcs.customizations.kernel.ActiveInAllModes;
 import org.opentcs.customizations.kernel.KernelExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
+import site.kicey.opentcs.strategies.rpc.api.RpcPeripheralJobDispatcher;
+import site.kicey.strategies.rpc.DubboConfiguration;
+import site.kicey.strategies.rpc.peripherals.dispatching.RpcPeripheralJobDispatcherProviderProxy;
 
 public class ProviderStarter {
   /**
@@ -36,7 +45,14 @@ public class ProviderStarter {
    * The kernel's executor service.
    */
   private final ScheduledExecutorService kernelExecutor;
-
+  /**
+   * The PeripheralJobDispatcher used as provider.
+   */
+  private final RpcPeripheralJobDispatcherProviderProxy peripheralJobDispatcherProviderProxy;
+  /**
+   * Dubbo related configuration.
+   */
+  private final DubboConfiguration dubboConfiguration;
   /**
    * Creates a new instance.
    *
@@ -48,10 +64,14 @@ public class ProviderStarter {
   @Inject
   protected ProviderStarter(LocalKernel kernel,
       InternalPlantModelService plantModelService,
+      RpcPeripheralJobDispatcherProviderProxy peripheralJobDispatcherProviderProxy,
+      DubboConfiguration dubboConfiguration,
       @ActiveInAllModes Set<KernelExtension> extensions,
       @KernelExecutor ScheduledExecutorService kernelExecutor) {
     this.kernel = requireNonNull(kernel, "kernel");
     this.plantModelService = requireNonNull(plantModelService, "plantModelService");
+    this.peripheralJobDispatcherProviderProxy = requireNonNull(peripheralJobDispatcherProviderProxy, "peripheralJobDispatcherProviderProxy");
+    this.dubboConfiguration = requireNonNull(dubboConfiguration, "dubboConfiguration");
     this.extensions = requireNonNull(extensions, "extensions");
     this.kernelExecutor = requireNonNull(kernelExecutor, "kernelExecutor");
   }
@@ -63,6 +83,18 @@ public class ProviderStarter {
    */
   public void startKernel()
       throws IOException {
+
+    ServiceConfig<RpcPeripheralJobDispatcher> serviceConfig = new ServiceConfig<>();
+    serviceConfig.setInterface(RpcPeripheralJobDispatcher.class);
+    serviceConfig.setRef(peripheralJobDispatcherProviderProxy);
+
+    DubboBootstrap.getInstance()
+        .application(RpcConstant.APPLICATION_NAME)
+        .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
+        .protocol(new ProtocolConfig("dubbo", -1))
+        .service(serviceConfig)
+        .start();
+
     kernelExecutor.submit(() -> {
       // Register kernel extensions.
       for (KernelExtension extension : extensions) {

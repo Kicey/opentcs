@@ -24,6 +24,9 @@ dependencies {
   api project(':openTCS-Strategies-Dubbo-Base')
   implementation group: 'de.huxhorn.sulky', name: 'de.huxhorn.sulky.ulid', version: '8.3.0'
 
+  implementation group: 'org.apache.dubbo', name: 'dubbo', version: '3.2.0'
+  implementation group: 'org.apache.dubbo', name: 'dubbo-dependencies-zookeeper-curator5', version: '3.2.0'
+
   implementation group: 'org.jgrapht', name: 'jgrapht-core', version: '1.5.1'
   runtimeOnly group: 'org.slf4j', name: 'slf4j-jdk14', version: '1.7.36'
 }

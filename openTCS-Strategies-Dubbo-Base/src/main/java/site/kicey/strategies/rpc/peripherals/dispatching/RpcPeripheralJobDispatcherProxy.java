@@ -1,8 +1,10 @@
 package site.kicey.strategies.rpc.peripherals.dispatching;
 
 import com.google.inject.Inject;
+
 import javax.annotation.Nonnull;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.ReferenceConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
@@ -14,6 +16,7 @@ import site.kicey.opentcs.strategies.rpc.api.RpcConstant;
 import site.kicey.opentcs.strategies.rpc.api.RpcPeripheralJobDispatcher;
 import site.kicey.strategies.rpc.DubboConfiguration;
 
+@Slf4j
 public class RpcPeripheralJobDispatcherProxy implements PeripheralJobDispatcher, PeripheralJobCallback {
 
   private final DubboConfiguration dubboConfiguration;
@@ -33,17 +36,24 @@ public class RpcPeripheralJobDispatcherProxy implements PeripheralJobDispatcher,
 
     ReferenceConfig<RpcPeripheralJobDispatcher> dispatcherServiceReferenceConfig = new ReferenceConfig<>();
     dispatcherServiceReferenceConfig.setInterface(RpcPeripheralJobDispatcher.class);
-    try {
-      DubboBootstrap.getInstance()
-          .application(RpcConstant.APPLICATION_NAME)
-          .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
-          .reference(dispatcherServiceReferenceConfig)
-          .start();
-
-      rpcPeripheralJobDispatcher = dispatcherServiceReferenceConfig.get();
-    } catch (Exception exception) {
-      exception.printStackTrace();
+    boolean dubboServiceStarted = false;
+    int count = 0;
+    while (!dubboServiceStarted) {
+      try {
+        Thread.sleep(1000);
+        DubboBootstrap.getInstance()
+            .application(RpcConstant.APPLICATION_NAME)
+            .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
+            .reference(dispatcherServiceReferenceConfig)
+            .start();
+        rpcPeripheralJobDispatcher = dispatcherServiceReferenceConfig.get();
+        dubboServiceStarted = true;
+      } catch (Exception exception) {
+        ++count;
+      }
     }
+
+    log.info("PeripheralJobDispatcher Dubbo service started successfully, after {} count.", count);
     rpcPeripheralJobDispatcher.initialize();
   }
 
