@@ -54,7 +54,7 @@ public class RpcRouterProxy implements Router {
         Thread.sleep(1000);
 
         DubboBootstrap.getInstance()
-            .application(RpcConstant.APPLICATION_NAME)
+            .application(RpcConstant.RPC_ROUTER_PROVIDER_NAME)
             .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
             .reference(dispatcherServiceReferenceConfig)
             .start();
@@ -125,7 +125,7 @@ public class RpcRouterProxy implements Router {
   @Override
   public Optional<List<DriveOrder>> getRoute(@Nonnull Vehicle vehicle, @Nonnull Point sourcePoint,
       @Nonnull TransportOrder transportOrder) {
-    return rpcRouter.getRoute(vehicle, sourcePoint, transportOrder);
+    return Optional.of(rpcRouter.getRoute(vehicle, sourcePoint, transportOrder));
   }
 
   /**
@@ -141,7 +141,7 @@ public class RpcRouterProxy implements Router {
   @Override
   public Optional<Route> getRoute(@Nonnull Vehicle vehicle, @Nonnull Point sourcePoint,
       @Nonnull Point destinationPoint) {
-    return rpcRouter.getRoute(vehicle, sourcePoint, destinationPoint);
+    return Optional.of(rpcRouter.getRoute(vehicle, sourcePoint, destinationPoint));
   }
 
   /**

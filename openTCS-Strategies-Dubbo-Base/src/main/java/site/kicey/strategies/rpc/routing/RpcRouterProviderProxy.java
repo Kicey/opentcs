@@ -14,7 +14,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 
 public class RpcRouterProviderProxy implements RpcRouter {
@@ -54,14 +53,14 @@ public class RpcRouterProviderProxy implements RpcRouter {
 
   @Nonnull
   @Override
-  public Optional<List<DriveOrder>> getRoute(@Nonnull Vehicle vehicle, @Nonnull Point sourcePoint, @Nonnull TransportOrder transportOrder) {
-    return router.getRoute(vehicle, sourcePoint, transportOrder);
+  public List<DriveOrder> getRoute(@Nonnull Vehicle vehicle, @Nonnull Point sourcePoint, @Nonnull TransportOrder transportOrder) {
+    return router.getRoute(vehicle, sourcePoint, transportOrder).orElse(null);
   }
 
   @Nonnull
   @Override
-  public Optional<Route> getRoute(@Nonnull Vehicle vehicle, @Nonnull Point sourcePoint, @Nonnull Point destinationPoint) {
-    return router.getRoute(vehicle, sourcePoint, destinationPoint);
+  public Route getRoute(@Nonnull Vehicle vehicle, @Nonnull Point sourcePoint, @Nonnull Point destinationPoint) {
+    return router.getRoute(vehicle, sourcePoint, destinationPoint).orElse(null);
   }
 
   @Override
