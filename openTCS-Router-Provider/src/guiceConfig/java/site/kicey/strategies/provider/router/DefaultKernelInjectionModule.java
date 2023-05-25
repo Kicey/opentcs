@@ -19,35 +19,27 @@ import org.opentcs.access.LocalKernel;
 import org.opentcs.access.SslParameterSet;
 import org.opentcs.common.LoggingScheduledThreadPoolExecutor;
 import org.opentcs.components.kernel.ObjectNameProvider;
-import org.opentcs.components.kernel.services.DispatcherService;
 import org.opentcs.components.kernel.services.InternalPeripheralJobService;
 import org.opentcs.components.kernel.services.InternalPeripheralService;
 import org.opentcs.components.kernel.services.InternalPlantModelService;
 import org.opentcs.components.kernel.services.InternalQueryService;
 import org.opentcs.components.kernel.services.InternalTransportOrderService;
-import org.opentcs.components.kernel.services.InternalVehicleService;
 import org.opentcs.components.kernel.services.NotificationService;
-import org.opentcs.components.kernel.services.PeripheralDispatcherService;
 import org.opentcs.components.kernel.services.PeripheralJobService;
 import org.opentcs.components.kernel.services.PeripheralService;
 import org.opentcs.components.kernel.services.PlantModelService;
 import org.opentcs.components.kernel.services.QueryService;
-import org.opentcs.components.kernel.services.RouterService;
-import org.opentcs.components.kernel.services.SchedulerService;
 import org.opentcs.components.kernel.services.TCSObjectService;
 import org.opentcs.components.kernel.services.TransportOrderService;
-import org.opentcs.components.kernel.services.VehicleService;
 import org.opentcs.customizations.ApplicationEventBus;
 import org.opentcs.customizations.ApplicationHome;
 import org.opentcs.customizations.kernel.GlobalSyncObject;
 import org.opentcs.customizations.kernel.KernelExecutor;
 import org.opentcs.customizations.kernel.KernelInjectionModule;
 import org.opentcs.drivers.peripherals.PeripheralControllerPool;
-import org.opentcs.drivers.vehicle.VehicleControllerPool;
 import org.opentcs.kernelbase.KernelApplicationConfiguration;
 import org.opentcs.kernelbase.OrderPoolConfiguration;
 import org.opentcs.kernelbase.SslConfiguration;
-import org.opentcs.kernelbase.extensions.controlcenter.vehicles.AttachmentManager;
 import org.opentcs.kernelbase.extensions.controlcenter.vehicles.VehicleEntryPool;
 import org.opentcs.kernelbase.peripherals.DefaultPeripheralAttachmentManager;
 import org.opentcs.kernelbase.peripherals.DefaultPeripheralControllerPool;
@@ -58,23 +50,14 @@ import org.opentcs.kernelbase.peripherals.PeripheralControllerFactory;
 import org.opentcs.kernelbase.peripherals.PeripheralEntryPool;
 import org.opentcs.kernelbase.persistence.ModelPersister;
 import org.opentcs.kernelbase.persistence.XMLFileModelPersister;
-import org.opentcs.kernelbase.services.StandardDispatcherService;
 import org.opentcs.kernelbase.services.StandardNotificationService;
-import org.opentcs.kernelbase.services.StandardPeripheralDispatcherService;
 import org.opentcs.kernelbase.services.StandardPeripheralJobService;
 import org.opentcs.kernelbase.services.StandardPeripheralService;
 import org.opentcs.kernelbase.services.StandardPlantModelService;
 import org.opentcs.kernelbase.services.StandardQueryService;
-import org.opentcs.kernelbase.services.StandardRouterService;
-import org.opentcs.kernelbase.services.StandardSchedulerService;
 import org.opentcs.kernelbase.services.StandardTCSObjectService;
 import org.opentcs.kernelbase.services.StandardTransportOrderService;
-import org.opentcs.kernelbase.services.StandardVehicleService;
-import org.opentcs.kernelbase.vehicles.DefaultVehicleControllerPool;
-import org.opentcs.kernelbase.vehicles.LocalVehicleControllerPool;
 import org.opentcs.kernelbase.vehicles.VehicleCommAdapterRegistry;
-import org.opentcs.kernelbase.vehicles.VehicleControllerComponentsFactory;
-import org.opentcs.kernelbase.vehicles.VehicleControllerFactory;
 import org.opentcs.kernelbase.workingset.InMemoryTCSObjectRepository;
 import org.opentcs.kernelbase.workingset.NotificationBuffer;
 import org.opentcs.kernelbase.workingset.PeripheralJobPoolManager;
@@ -141,8 +124,8 @@ public class DefaultKernelInjectionModule
 
     configureVehicleControllers();
 
-    bind(AttachmentManager.class)
-        .in(Singleton.class);
+//    bind(AttachmentManager.class)
+//        .in(Singleton.class);
     bind(VehicleEntryPool.class)
         .in(Singleton.class);
 
@@ -183,9 +166,9 @@ public class DefaultKernelInjectionModule
     bind(TransportOrderService.class).to(StandardTransportOrderService.class);
     bind(InternalTransportOrderService.class).to(StandardTransportOrderService.class);
 
-    bind(StandardVehicleService.class).in(Singleton.class);
-    bind(VehicleService.class).to(StandardVehicleService.class);
-    bind(InternalVehicleService.class).to(StandardVehicleService.class);
+//    bind(StandardVehicleService.class).in(Singleton.class);
+//    bind(VehicleService.class).to(StandardVehicleService.class);
+//    bind(InternalVehicleService.class).to(StandardVehicleService.class);
 
     bind(StandardTCSObjectService.class).in(Singleton.class);
     bind(TCSObjectService.class).to(StandardTCSObjectService.class);
@@ -193,14 +176,14 @@ public class DefaultKernelInjectionModule
     bind(StandardNotificationService.class).in(Singleton.class);
     bind(NotificationService.class).to(StandardNotificationService.class);
 
-    bind(StandardRouterService.class).in(Singleton.class);
-    bind(RouterService.class).to(StandardRouterService.class);
+//    bind(StandardRouterService.class).in(Singleton.class);
+//    bind(RouterService.class).to(StandardRouterService.class);
 
-    bind(StandardDispatcherService.class).in(Singleton.class);
-    bind(DispatcherService.class).to(StandardDispatcherService.class);
+//    bind(StandardDispatcherService.class).in(Singleton.class);
+//    bind(DispatcherService.class).to(StandardDispatcherService.class);
 
-    bind(StandardSchedulerService.class).in(Singleton.class);
-    bind(SchedulerService.class).to(StandardSchedulerService.class);
+//    bind(StandardSchedulerService.class).in(Singleton.class);
+//    bind(SchedulerService.class).to(StandardSchedulerService.class);
 
     bind(StandardQueryService.class).in(Singleton.class);
     bind(QueryService.class).to(StandardQueryService.class);
@@ -214,20 +197,20 @@ public class DefaultKernelInjectionModule
     bind(PeripheralJobService.class).to(StandardPeripheralJobService.class);
     bind(InternalPeripheralJobService.class).to(StandardPeripheralJobService.class);
 
-    bind(StandardPeripheralDispatcherService.class).in(Singleton.class);
-    bind(PeripheralDispatcherService.class).to(StandardPeripheralDispatcherService.class);
+//    bind(StandardPeripheralDispatcherService.class).in(Singleton.class);
+//    bind(PeripheralDispatcherService.class).to(StandardPeripheralDispatcherService.class);
   }
 
   private void configureVehicleControllers() {
-    install(new FactoryModuleBuilder().build(VehicleControllerFactory.class));
-    install(new FactoryModuleBuilder().build(VehicleControllerComponentsFactory.class));
+//    install(new FactoryModuleBuilder().build(VehicleControllerFactory.class));
+//    install(new FactoryModuleBuilder().build(VehicleControllerComponentsFactory.class));
 
-    bind(DefaultVehicleControllerPool.class)
-        .in(Singleton.class);
-    bind(VehicleControllerPool.class)
-        .to(DefaultVehicleControllerPool.class);
-    bind(LocalVehicleControllerPool.class)
-        .to(DefaultVehicleControllerPool.class);
+//    bind(DefaultVehicleControllerPool.class)
+//        .in(Singleton.class);
+//    bind(VehicleControllerPool.class)
+//        .to(DefaultVehicleControllerPool.class);
+//    bind(LocalVehicleControllerPool.class)
+//        .to(DefaultVehicleControllerPool.class);
   }
 
   private void configurePeripheralControllers() {
