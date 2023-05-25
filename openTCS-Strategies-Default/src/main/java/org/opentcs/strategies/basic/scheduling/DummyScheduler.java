@@ -5,13 +5,12 @@
  * see the licensing information (LICENSE.txt) you should have received with
  * this copy of the software.)
  */
-package site.kicey.strategies.rpc.scheduling;
-
-import static java.util.Objects.requireNonNull;
+package org.opentcs.strategies.basic.scheduling;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import static java.util.Objects.requireNonNull;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

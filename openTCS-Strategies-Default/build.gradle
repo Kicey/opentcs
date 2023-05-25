@@ -1,6 +1,3 @@
-group 'site.kicey'
-version '5.9.0-SNAPSHOT'
-
 apply from: "${rootDir}/gradle/java-project.gradle"
 apply from: "${rootDir}/gradle/java-codequality.gradle"
 apply from: "${rootDir}/gradle/guice-project.gradle"
@@ -11,11 +8,8 @@ apply plugin: 'org.kordamp.gradle.stats'
 dependencies {
   api project(':openTCS-API-Injection')
   api project(':openTCS-Common')
-  api project(':openTCS-Strategies-API')
-  api project(':openTCS-Strategies-Dubbo-Base')
 
-  // https://mvnrepository.com/artifact/org.apache.dubbo/dubbo
-  implementation group: 'org.apache.dubbo', name: 'dubbo', version: '3.1.1'
+  implementation group: 'org.jgrapht', name: 'jgrapht-core', version: '1.5.1'
 }
 
 task release {
