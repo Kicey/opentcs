@@ -89,7 +89,7 @@ public class ProviderStarter {
     serviceConfig.setRef(routerProviderProxy);
 
     DubboBootstrap.getInstance()
-        .application(RpcConstant.APPLICATION_NAME)
+        .application(RpcConstant.RPC_ROUTER_PROVIDER_NAME)
         .registry(new RegistryConfig(dubboConfiguration.zookeeperAddress()))
         .protocol(new ProtocolConfig("dubbo", -1))
         .service(serviceConfig)
