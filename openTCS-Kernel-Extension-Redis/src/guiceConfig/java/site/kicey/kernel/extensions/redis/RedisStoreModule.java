@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import com.google.inject.multibindings.OptionalBinder;
+import org.opentcs.customizations.kernel.GlobalSyncObject;
 import org.opentcs.customizations.kernel.KernelInjectionModule;
 import org.opentcs.data.ObjectHistory;
 import org.opentcs.data.TCSObject;
@@ -41,6 +42,7 @@ import org.opentcs.data.peripherals.PeripheralJob;
 import org.opentcs.data.peripherals.PeripheralOperation;
 import org.opentcs.workingset.TCSObjectRepository;
 import org.redisson.Redisson;
+import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
@@ -105,12 +107,15 @@ public class RedisStoreModule extends KernelInjectionModule {
     bind(RedissonClient.class)
         .toInstance(redisClient);
 
+    RLock lock = redisClient.getLock("openTCS_global_lock");
+    // A single global synchronization object for the kernel.
+    bind(Object.class)
+        .annotatedWith(GlobalSyncObject.class)
+        .toInstance(lock);
+
     OptionalBinder.newOptionalBinder(binder(), TCSObjectRepository.class)
         .setBinding()
         .to(RedisTCSObjectRepository.class)
-        .in(Singleton.class);
-    extensionsBinderOperating().addBinding()
-        .to(RedisRepository.class)
         .in(Singleton.class);
   }
 
