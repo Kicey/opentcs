@@ -10,17 +10,11 @@ package site.kicey.strategies.provider.router;
 import com.google.common.util.concurrent.Uninterruptibles;
 import org.opentcs.access.Kernel;
 import org.opentcs.components.kernel.*;
-import org.opentcs.components.kernel.services.InternalVehicleService;
 import org.opentcs.customizations.kernel.ActiveInOperatingMode;
 import org.opentcs.customizations.kernel.GlobalSyncObject;
 import org.opentcs.customizations.kernel.KernelExecutor;
-import org.opentcs.data.model.Vehicle;
 import org.opentcs.kernelbase.KernelApplicationConfiguration;
-import org.opentcs.kernelbase.extensions.controlcenter.vehicles.AttachmentManager;
-import org.opentcs.kernelbase.peripherals.LocalPeripheralControllerPool;
-import org.opentcs.kernelbase.peripherals.PeripheralAttachmentManager;
 import org.opentcs.kernelbase.persistence.ModelPersister;
-import org.opentcs.kernelbase.vehicles.LocalVehicleControllerPool;
 import org.opentcs.kernelbase.workingset.PeripheralJobPoolManager;
 import org.opentcs.kernelbase.workingset.PlantModelManager;
 import org.opentcs.kernelbase.workingset.TransportOrderPoolManager;
@@ -60,26 +54,6 @@ public class KernelStateOperating
    */
   private final Router router;
   /**
-   * This kernel's scheduler.
-   */
-  private final Scheduler scheduler;
-  /**
-   * This kernel's dispatcher.
-   */
-  private final Dispatcher dispatcher;
-  /**
-   * This kernel's peripheral job dispatcher.
-   */
-  private final PeripheralJobDispatcher peripheralJobDispatcher;
-  /**
-   * A pool of vehicle controllers.
-   */
-  private final LocalVehicleControllerPool vehicleControllerPool;
-  /**
-   * A pool of peripheral controllers.
-   */
-  private final LocalPeripheralControllerPool peripheralControllerPool;
-  /**
    * The kernel's executor.
    */
   private final ScheduledExecutorService kernelExecutor;
@@ -91,18 +65,6 @@ public class KernelStateOperating
    * This kernel state's local extensions.
    */
   private final Set<KernelExtension> extensions;
-  /**
-   * The kernel's attachment manager.
-   */
-  private final AttachmentManager attachmentManager;
-  /**
-   * The kernel's peripheral attachment manager.
-   */
-  private final PeripheralAttachmentManager peripheralAttachmentManager;
-  /**
-   * The vehicle service.
-   */
-  private final InternalVehicleService vehicleService;
   /**
    * A handle for the cleaner task.
    */
@@ -122,17 +84,9 @@ public class KernelStateOperating
    * @param modelPersister The model persister to be used.
    * @param configuration This class's configuration.
    * @param router The router to be used.
-   * @param scheduler The scheduler to be used.
-   * @param dispatcher The dispatcher to be used.
-   * @param peripheralJobDispatcher The peripheral job dispatcher to be used.
-   * @param controllerPool The vehicle controller pool to be used.
-   * @param peripheralControllerPool The peripheral controller pool to be used.
    * @param kernelExecutor The kernel executer to be used.
    * @param orderCleanerTask The order cleaner task to be used.
    * @param extensions The kernel extensions to load.
-   * @param attachmentManager The attachment manager to be used.
-   * @param defaultPeripheralAttachmentManager The peripheral attachment manager to be used.
-   * @param vehicleService The vehicle service to be used.
    */
   @Inject
   public KernelStateOperating(@GlobalSyncObject Object globalSyncObject,
@@ -142,17 +96,9 @@ public class KernelStateOperating
                               ModelPersister modelPersister,
                               KernelApplicationConfiguration configuration,
                               Router router,
-                              Scheduler scheduler,
-                              Dispatcher dispatcher,
-                              PeripheralJobDispatcher peripheralJobDispatcher,
-                              LocalVehicleControllerPool controllerPool,
-                              LocalPeripheralControllerPool peripheralControllerPool,
                               @KernelExecutor ScheduledExecutorService kernelExecutor,
                               OrderCleanerTask orderCleanerTask,
-                              @ActiveInOperatingMode Set<KernelExtension> extensions,
-                              AttachmentManager attachmentManager,
-                              PeripheralAttachmentManager defaultPeripheralAttachmentManager,
-                              InternalVehicleService vehicleService) {
+                              @ActiveInOperatingMode Set<KernelExtension> extensions) {
     super(globalSyncObject,
           plantModelManager,
           modelPersister,
@@ -160,20 +106,9 @@ public class KernelStateOperating
     this.orderPoolManager = requireNonNull(orderPoolManager, "orderPoolManager");
     this.jobPoolManager = requireNonNull(jobPoolManager, "jobPoolManager");
     this.router = requireNonNull(router, "router");
-    this.scheduler = requireNonNull(scheduler, "scheduler");
-    this.dispatcher = requireNonNull(dispatcher, "dispatcher");
-    this.peripheralJobDispatcher = requireNonNull(peripheralJobDispatcher,
-                                                  "peripheralJobDispatcher");
-    this.vehicleControllerPool = requireNonNull(controllerPool, "controllerPool");
-    this.peripheralControllerPool = requireNonNull(peripheralControllerPool,
-                                                   "peripheralControllerPool");
     this.kernelExecutor = requireNonNull(kernelExecutor, "kernelExecutor");
     this.orderCleanerTask = requireNonNull(orderCleanerTask, "orderCleanerTask");
     this.extensions = requireNonNull(extensions, "extensions");
-    this.attachmentManager = requireNonNull(attachmentManager, "attachmentManager");
-    this.peripheralAttachmentManager = requireNonNull(defaultPeripheralAttachmentManager,
-                                                      "peripheralAttachmentManager");
-    this.vehicleService = requireNonNull(vehicleService, "vehicleService");
   }
 
   // Implementation of interface Kernel starts here.
@@ -185,33 +120,8 @@ public class KernelStateOperating
     }
     LOG.debug("Initializing operating state...");
 
-    // Reset vehicle states to ensure vehicles are not dispatchable initially.
-    for (Vehicle curVehicle : vehicleService.fetchObjects(Vehicle.class)) {
-      vehicleService.updateVehicleProcState(curVehicle.getReference(), Vehicle.ProcState.IDLE);
-      vehicleService.updateVehicleIntegrationLevel(curVehicle.getReference(),
-                                                   Vehicle.IntegrationLevel.TO_BE_RESPECTED);
-      vehicleService.updateVehicleState(curVehicle.getReference(), Vehicle.State.UNKNOWN);
-      vehicleService.updateVehicleTransportOrder(curVehicle.getReference(), null);
-      vehicleService.updateVehicleOrderSequence(curVehicle.getReference(), null);
-    }
-
-    LOG.debug("Initializing scheduler '{}'...", scheduler);
-    scheduler.initialize();
     LOG.debug("Initializing router '{}'...", router);
     router.initialize();
-    LOG.debug("Initializing dispatcher '{}'...", dispatcher);
-    dispatcher.initialize();
-    LOG.debug("Initializing peripheral job dispatcher '{}'...", peripheralJobDispatcher);
-    peripheralJobDispatcher.initialize();
-    LOG.debug("Initializing vehicle controller pool '{}'...", vehicleControllerPool);
-    vehicleControllerPool.initialize();
-    LOG.debug("Initializing peripheral controller pool '{}'...", peripheralControllerPool);
-    peripheralControllerPool.initialize();
-    LOG.debug("Initializing attachment manager '{}'...", attachmentManager);
-    attachmentManager.initialize();
-    LOG.debug("Initializing peripheral attachment manager '{}'...",
-        peripheralAttachmentManager);
-    peripheralAttachmentManager.initialize();
 
     // Start a task for cleaning up old orders periodically.
     cleanerTaskFuture = kernelExecutor.scheduleAtFixedRate(orderCleanerTask,
@@ -257,35 +167,12 @@ public class KernelStateOperating
     cleanerTaskFuture = null;
 
     // Terminate strategies.
-    LOG.debug("Terminating peripheral job dispatcher '{}'...", peripheralJobDispatcher);
-    peripheralJobDispatcher.terminate();
-    LOG.debug("Terminating dispatcher '{}'...", dispatcher);
-    dispatcher.terminate();
     LOG.debug("Terminating router '{}'...", router);
     router.terminate();
-    LOG.debug("Terminating scheduler '{}'...", scheduler);
-    scheduler.terminate();
-    LOG.debug("Terminating peripheral controller pool '{}'...", peripheralControllerPool);
-    peripheralControllerPool.terminate();
-    LOG.debug("Terminating vehicle controller pool '{}'...", vehicleControllerPool);
-    vehicleControllerPool.terminate();
-    LOG.debug("Terminating attachment manager '{}'...", attachmentManager);
-    attachmentManager.terminate();
-    LOG.debug("Terminating peripheral attachment manager '{}'...",
-        peripheralAttachmentManager);
-    peripheralAttachmentManager.terminate();
     // Grant communication adapters etc. some time to settle things.
     Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
 
     // Ensure that vehicles do not reference orders any more.
-    for (Vehicle curVehicle : vehicleService.fetchObjects(Vehicle.class)) {
-      vehicleService.updateVehicleProcState(curVehicle.getReference(), Vehicle.ProcState.IDLE);
-      vehicleService.updateVehicleIntegrationLevel(curVehicle.getReference(),
-                                                   Vehicle.IntegrationLevel.TO_BE_RESPECTED);
-      vehicleService.updateVehicleState(curVehicle.getReference(), Vehicle.State.UNKNOWN);
-      vehicleService.updateVehicleTransportOrder(curVehicle.getReference(), null);
-      vehicleService.updateVehicleOrderSequence(curVehicle.getReference(), null);
-    }
 
     // Remove all orders and order sequences from the pool.
     orderPoolManager.clear();
